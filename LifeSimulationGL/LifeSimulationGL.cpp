@@ -1,6 +1,7 @@
 ﻿
 #include <windows.h>
 #include <gl/gl.h>
+#include "Random.h"
 
 #pragma comment(lib, "opengl32.lib")
 
@@ -64,7 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	/* enable OpenGL for the window */
 	EnableOpenGL(hwnd, &hDC, &hRC);
 
-	//PlaySoundW(L"D:\\Chrome Downloads\\sound\\YinYang_WhenImByYou.wav", NULL, SND_ASYNC);
+	RandomFloat random;
 
 	/* program main loop */
 	while (!bQuit)
@@ -93,7 +94,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			glClearColor(0, 0, 0, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glRotatef(1, 0, 0, 1);
+			glRotatef(random.Next(-1,1), 0, 0, 1);
 
 			glBegin(GL_TRIANGLES);
 

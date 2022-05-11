@@ -2,6 +2,8 @@
 #include <ctime>
 #include <cmath>
 
+static unsigned long long GlobalSeed = time(NULL);
+
 class RandomLongLong {
 	typedef unsigned long long RandVar;
 
@@ -13,7 +15,7 @@ class RandomLongLong {
 
 public:
 	RandomLongLong() {
-		seed = time(NULL);
+		seed = GlobalSeed;
 
 		Restart();
 	}
@@ -34,7 +36,7 @@ public:
 		return seed;
 	}
 
-	size_t getIteration() {
+	size_t GetIteration() {
 		return iter;
 	}
 
@@ -83,7 +85,7 @@ class RandomInt {
 
 public:
 	RandomInt() {
-		seed = time(NULL);
+		seed = GlobalSeed;
 
 		Restart();
 	}
@@ -104,7 +106,7 @@ public:
 		return seed;
 	}
 
-	size_t getIteration() {
+	size_t GetIteration() {
 		return iter;
 	}
 
@@ -153,7 +155,7 @@ class RandomShort {
 
 public:
 	RandomShort() {
-		seed = time(NULL);
+		seed = GlobalSeed;
 
 		Restart();
 	}
@@ -174,7 +176,7 @@ public:
 		return seed;
 	}
 
-	size_t getIteration() {
+	size_t GetIteration() {
 		return iter;
 	}
 
@@ -223,7 +225,7 @@ class RandomByte {
 
 public:
 	RandomByte() {
-		seed = time(NULL);
+		seed = GlobalSeed;
 
 		Restart();
 	}
@@ -244,7 +246,7 @@ public:
 		return seed;
 	}
 
-	size_t getIteration() {
+	size_t GetIteration() {
 		return iter;
 	}
 
@@ -293,7 +295,7 @@ class RandomFloat {
 
 public:
 	RandomFloat() {
-		seed = time(NULL);
+		seed = GlobalSeed;
 
 		Restart();
 	}
@@ -314,7 +316,7 @@ public:
 		return seed;
 	}
 
-	size_t getIteration() {
+	size_t GetIteration() {
 		return iter;
 	}
 
@@ -363,7 +365,7 @@ class RandomDouble {
 
 public:
 	RandomDouble() {
-		seed = time(NULL);
+		seed = GlobalSeed;
 
 		Restart();
 	}
@@ -384,7 +386,7 @@ public:
 		return seed;
 	}
 
-	size_t getIteration() {
+	size_t GetIteration() {
 		return iter;
 	}
 

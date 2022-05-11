@@ -26,8 +26,6 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	BOOL bQuit = FALSE;
 	float theta = 0.0f;
 
-	bool is_pause = false;
-
 	/* register window class */
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_OWNDC;
@@ -87,8 +85,6 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		}
 		else
 		{
-			if (GetAsyncKeyState(' ')) { is_pause = !is_pause; Sleep(100); }
-
 			/* OpenGL animation code goes here */
 
 			glClearColor(0, 0, 0, 0.0f);

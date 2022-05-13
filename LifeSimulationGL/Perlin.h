@@ -33,7 +33,7 @@ public:
 		p.insert(p.end(), p.begin(), p.end());
 	}
 	// Generate a new permutation vector based on the value of seed
-	PerlinNoise(unsigned int seed) {
+	void Init(unsigned int seed) {
 		p.resize(256);
 
 		// Fill p with values from 0 to 255

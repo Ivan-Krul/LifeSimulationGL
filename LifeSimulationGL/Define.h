@@ -2,11 +2,12 @@
 
 #define WINDOW_X 800
 #define WINDOW_Y 800
-#define WINDOW_FREQUENCY 5
+#define WINDOW_FREQUENCY 30
 #define WINDOW_RELATION (float(WINDOW_X)/float(WINDOW_Y))
 
-#define MAP_X 60
-#define MAP_Y 60
+#define MAP_X 256
+#define MAP_Y 256
+#define MAP_SCALE 1
 #define MAP_DETAIL_CHANGES 4
 #define MAP_NUM_OCTAVES 4
 

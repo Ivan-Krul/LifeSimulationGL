@@ -1,9 +1,11 @@
 ﻿
 #include <windows.h>
 #include <gl/gl.h>
+#include <string>
 #include "Random.h"
 #include "Define.h"
 #include "Painter.h"
+#include <chrono>
 
 #pragma comment(lib, "opengl32.lib")
 
@@ -13,6 +15,7 @@ void DisableOpenGL(HWND, HDC, HGLRC);
 
 Painter painter;
 Map map;
+float lv = 0.5;
 
 int WINAPI WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -64,7 +67,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	/* enable OpenGL for the window */
 	EnableOpenGL(hwnd, &hDC, &hRC);
 
-	map.GenerateMap();
+	map.GenerateMap(GlobalSeed);
 
 	/* program main loop */
 	while (!bQuit)
@@ -88,12 +91,34 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		{
 			/* OpenGL animation code goes here */
 
+			std::chrono::system_clock::time_point beg = std::chrono::system_clock::now();
+
+			if (GetAsyncKeyState(VK_F4)) {
+				map.GenerateMap(GlobalSeed+int(theta));
+			}
+			if (GetAsyncKeyState(VK_F6)) {
+				lv -= 0.005;
+			}
+			if (GetAsyncKeyState(VK_F7)) {
+				lv += 0.005;
+			}
+			if (GetAsyncKeyState(VK_TAB)) {
+				painter.SwitchMode();
+			}
+
+
 			glClearColor(0, 0, 0, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			painter.Paint(map);
+			painter.Paint(map,lv );
 
 			SwapBuffers(hDC);
+
+			std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+
+			
+			std::wstring text = L"LifeSimulationGL " + std::to_wstring(std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count())+L" ms";
+			SetWindowText(hwnd, text.c_str());
 
 			theta += 1.0f;
 			Sleep(1000.0/WINDOW_FREQUENCY);

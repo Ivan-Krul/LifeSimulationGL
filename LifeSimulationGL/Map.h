@@ -23,7 +23,7 @@ public:
 
 	void GenerateMap(int seed) {
 		RandomInt* a = new RandomInt(seed);
-		PerlinNoise PN[MAP_NUM_OCTAVES];
+		PerlinNoise PN[MAP_NUM_OCTAVES*3];
 
 		for (int o = 0;o < MAP_NUM_OCTAVES;o++) {
 			PN[o].Init(a->Next());
@@ -31,32 +31,49 @@ public:
 
 		delete a;
 
-		double mn = INFINITY;
-		double mx = -INFINITY;
+		double mnX = INFINITY;
+		double mxX = -INFINITY;
+		double mnY = INFINITY;
+		double mxY = -INFINITY;
+		double mnZ = INFINITY;
+		double mxZ = -INFINITY;
 
 		for (int i = 0;i < MAP_Y;i++) {
 			for (int j = 0;j < MAP_X;j++) {
 
 				OptionMap[MAP_Y * j+i].X = 0;
+				OptionMap[MAP_Y * j + i].Y = 0;
+				OptionMap[MAP_Y * j + i].Z = 0;
 
-				for (int o = 0;o < MAP_NUM_OCTAVES;o++) {
-					double c = 1.0/pow(MAP_DETAIL_CHANGES,double(o));
-					double k = pow(MAP_DETAIL_CHANGES, double(o));
+				for (int o = 0;o < MAP_NUM_OCTAVES*3;o++) {
+					double c = 1.0 / pow(MAP_DETAIL_CHANGES, double(o % MAP_NUM_OCTAVES));
+					double k = pow(MAP_DETAIL_CHANGES, double(o % MAP_NUM_OCTAVES));
 
-					OptionMap[MAP_Y * j + i].X +=
-					PN[0].noise(double(j * k*(1.0/MAP_SCALE)) / MAP_X, double(i * k * (1.0 / MAP_SCALE)) / MAP_Y, 0.0)*c;
+					if (o / MAP_NUM_OCTAVES == 0)
+						OptionMap[MAP_Y * j + i].X += PN[o].noise(double(j * k*(1.0/MAP_SCALE)) / MAP_X, double(i * k * (1.0 / MAP_SCALE)) / MAP_Y, 0.0)*c;
+					else if (o / MAP_NUM_OCTAVES == 1)
+						OptionMap[MAP_Y * j + i].Y += PN[o].noise(double(j * k * (1.0 / MAP_SCALE)) / MAP_X, double(i * k * (1.0 / MAP_SCALE)) / MAP_Y, 0.0) * c;
+					else OptionMap[MAP_Y * j + i].X += PN[o].noise(double(j * k * (1.0 / MAP_SCALE)) / MAP_X, double(i * k * (1.0 / MAP_SCALE)) / MAP_Y, 0.0) * c;
+
 				}
 				OptionMap[MAP_Y * j + i].X = Func(OptionMap[MAP_Y * j + i].X);
+				OptionMap[MAP_Y * j + i].Y = Func(OptionMap[MAP_Y * j + i].Y);
+				OptionMap[MAP_Y * j + i].Z = Func(OptionMap[MAP_Y * j + i].Z);
 
-
-				mn = min(OptionMap[MAP_Y * j + i].X, mn);
-				mx = max(OptionMap[MAP_Y * j + i].X, mx);
+				mnX = min(OptionMap[MAP_Y * j + i].X, mnX);
+				mxX = max(OptionMap[MAP_Y * j + i].X, mxX);
+				mnY = min(OptionMap[MAP_Y * j + i].Y, mnY);
+				mxY = max(OptionMap[MAP_Y * j + i].Y, mxY);
+				mnZ = min(OptionMap[MAP_Y * j + i].Z, mnZ);
+				mxZ = max(OptionMap[MAP_Y * j + i].Z, mxZ);
 			}
 		}
 
 		for (int i = 0;i < MAP_Y;i++) {
 			for (int j = 0;j < MAP_X;j++) {
-				OptionMap[MAP_Y * j + i].X = (OptionMap[MAP_Y * j + i].X - mn) / (mx - mn);
+				OptionMap[MAP_Y * j + i].X = (OptionMap[MAP_Y * j + i].X - mnX) / (mxX - mnX);
+				OptionMap[MAP_Y * j + i].Y = (OptionMap[MAP_Y * j + i].Y - mnY) / (mxY - mnY);
+				OptionMap[MAP_Y * j + i].Z = (OptionMap[MAP_Y * j + i].Z - mnZ) / (mxZ - mnZ);
 			}
 		}
 

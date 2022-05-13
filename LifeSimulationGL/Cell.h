@@ -27,7 +27,7 @@ public:
 		Coord = coord;
 
 		IterGene = CELL_STARTED_NUM_GENE;
-		Energy = CELL_STARED_ENERGY;
+		Energy = CELL_STARTED_ENERGY;
 		Wait = 0;
 
 		RandomByte rand;

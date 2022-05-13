@@ -9,7 +9,7 @@ class Painter {
 	char MapMode = 0;
 public:
 	void SwitchMode() {
-		MapMode= ++MapMode%3;
+		MapMode= ++MapMode%6;
 	}
 
 	void DrawQuad() {
@@ -26,7 +26,7 @@ public:
 	void Paint(Map& map,float& t) {
 		glLoadIdentity();
 		glTranslatef(-1.0f, -1.0f, 0.0f);
-		glScalef(2.0f / MAP_X, 2.0f / MAP_Y, 0.0f);
+		glScalef(WINDOW_RELATION / MAP_X, 2.0f / MAP_Y, 0.0f);
 
 		double mn = INFINITY;
 		double mx = -INFINITY;
@@ -62,22 +62,39 @@ public:
 						}
 					}
 					else glColor3d(map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j));
+
+					DrawQuad();
 					break;
 				case 1:
 					if (map.GetLandMap(i, j) > t) {
 						glColor3d(map.GetLandMap(i, j), map.GetLandMap(i, j), map.GetLandMap(i, j));
 					}
 					else glColor3d(map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j));
+
+					DrawQuad();
 					break;
 				case 2:
-					glColor3d(0, 0, 0);
+					glColor3d(map.GetLandMap(i, j), map.GetLandMap(i, j), map.GetLandMap(i, j));
+
+					DrawQuad();
+					break;
+				case 3:
+					glColor3d(map.GetSunMap(i, j), map.GetSunMap(i, j), map.GetSunMap(i, j)-0.2);
+
+					DrawQuad();
+					break;
+				case 4:
+					glColor3d(map.GetLandMap(i, j)-0.1, map.GetLandMap(i, j)-0.1, map.GetLandMap(i, j));
+
+					DrawQuad();
+					break;
+				case 5:
+					//glColor3d(0, 0, 0);
 					break;
 				default:
 					break;
 				}
 				//if (MapMode == 'V')
-
-				DrawQuad();
 
 				glPopMatrix();
 			}

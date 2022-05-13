@@ -68,6 +68,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	EnableOpenGL(hwnd, &hDC, &hRC);
 
 	map.GenerateMap(GlobalSeed);
+	std::chrono::system_clock::time_point beg = std::chrono::system_clock::now(), end;
 
 	/* program main loop */
 	while (!bQuit)
@@ -91,16 +92,16 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		{
 			/* OpenGL animation code goes here */
 
-			std::chrono::system_clock::time_point beg = std::chrono::system_clock::now();
+			beg = std::chrono::system_clock::now();
 
 			if (GetAsyncKeyState(VK_F4)) {
 				map.GenerateMap(GlobalSeed+int(theta));
 			}
 			if (GetAsyncKeyState(VK_F6)) {
-				lv -= 0.005;
+				lv -= 0.0025;
 			}
 			if (GetAsyncKeyState(VK_F7)) {
-				lv += 0.005;
+				lv += 0.0025;
 			}
 			if (GetAsyncKeyState(VK_TAB)) {
 				painter.SwitchMode();
@@ -114,11 +115,15 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 			SwapBuffers(hDC);
 
-			std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
-
+			end = std::chrono::system_clock::now();
 			
 			std::wstring text = L"LifeSimulationGL " + std::to_wstring(std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count())+L" ms";
+
+			beg = std::chrono::system_clock::now();
+
 			SetWindowText(hwnd, text.c_str());
+
+
 
 			theta += 1.0f;
 			Sleep(1000.0/WINDOW_FREQUENCY);

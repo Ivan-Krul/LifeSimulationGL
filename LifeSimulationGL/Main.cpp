@@ -2,16 +2,17 @@
 #include <windows.h>
 #include <gl/gl.h>
 #include "Random.h"
+#include "Define.h"
+#include "Painter.h"
 
 #pragma comment(lib, "opengl32.lib")
-
-#define WINDOW_X 800
-#define WINDOW_Y 800
-#define WINDOW_RELATION (float(WINDOW_X)/float(WINDOW_Y))
 
 LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 void EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
 void DisableOpenGL(HWND, HDC, HGLRC);
+
+Painter painter;
+Map map;
 
 int WINAPI WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -63,7 +64,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	/* enable OpenGL for the window */
 	EnableOpenGL(hwnd, &hDC, &hRC);
 
-	RandomFloat random;
+	map.GenerateMap();
 
 	/* program main loop */
 	while (!bQuit)
@@ -90,23 +91,12 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			glClearColor(0, 0, 0, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glRotatef(random.Next(-1,1), 0, 0, 1);
-
-			glBegin(GL_TRIANGLES);
-
-			glColor3ub(255, 0, 0);
-			glVertex2i(1, -1);
-			glColor3ub(0, 255, 0);
-			glVertex2i(0, 1);
-			glColor3ub(0, 0, 255);
-			glVertex2i(-1, -1);
-
-			glEnd();
+			painter.Paint(map);
 
 			SwapBuffers(hDC);
 
 			theta += 1.0f;
-			Sleep(1);
+			Sleep(1000.0/WINDOW_FREQUENCY);
 		}
 	}
 

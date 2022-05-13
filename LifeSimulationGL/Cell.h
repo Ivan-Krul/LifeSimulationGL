@@ -3,11 +3,7 @@
 #include <Windows.h>
 #include <stdint.h>
 #include "Random.h"
-
-#define CELL_COUNT_GENES 4
-#define CELL_CHANCE_MUTATION 0.2f
-#define CELL_STARED_ENERGY 20
-#define CELL_STARTED_NUM_GENE 0
+#include "Define.h"
 
 enum Command : uint8_t {
 	Nothing = 0,
@@ -68,6 +64,10 @@ public:
 
 	void SetEnergy(uint16_t energy) {
 		Energy = energy;
+	}
+
+	uint16_t GetCurrentCommand() {
+		return Gene[IterGene * 2] + Gene[IterGene * 2 + 1] * 256;
 	}
 
 	uint16_t GetEnergy() {

@@ -3,6 +3,7 @@
 #include "Perlin.h"
 #include "Define.h"
 #include "Variables.h"
+#include <vector>
 
 class Map {
 	Point3<double>* OptionMap;
@@ -15,10 +16,6 @@ public:
 	Map() {
 		OptionMap = new Point3<double>[MAP_X * MAP_Y];
 		VisibleMap = new bool[MAP_X * MAP_Y];
-	}
-
-	bool IsInMap(int x, int y) {
-		return (0 <= x) && (x < MAP_X) && (0 <= y) && (y < MAP_Y);
 	}
 
 	void GenerateMap(int seed) {
@@ -81,6 +78,7 @@ public:
 
 	void Erode(int cnt) {
 		RandomInt random(cnt+GlobalSeed);
+		std::vector<Point2<int>> list;
 		Point2<int> cord;
 		for (int s = 0;s < cnt;s++) {
 			cord.X = random.Next(MAP_X);
@@ -107,15 +105,21 @@ public:
 					}
 				}
 
-				if (OptionMap[MAP_Y * cor.X + cor.Y].X == OptionMap[MAP_Y * cord.X + cord.Y].X) {
-					OptionMap[MAP_Y * (cord.X) + (cord.Y)].X += 0.01;
+				bool isInList = false;
+				for (int i = 0;i < list.size();i++) {
+					if(cor.X==list[i].X && cor.Y == list[i].Y)
+						isInList = true;
+				}
+
+				if (isInList) {
+					OptionMap[MAP_Y * (cord.X) + (cord.Y)].X += 0.001;
 
 					for (int i = -1;i < 2;i++) {
 						for (int j = -1;j < 2;j++) {
 
 							if (IsInMap((j + cord.X), (i + cord.Y))) {
-								if (OptionMap[MAP_Y * (j + cord.X) + (j + cord.Y)].X - 0.001 > 0)
-									OptionMap[MAP_Y * (j + cord.X) + (j + cord.Y)].X -= 0.001;
+								if (OptionMap[MAP_Y * (j + cord.X) + (j + cord.Y)].X - 0.0001 > 0)
+									OptionMap[MAP_Y * (j + cord.X) + (j + cord.Y)].X -= 0.0001;
 							}
 
 						}
@@ -124,9 +128,10 @@ public:
 					break;
 				}
 				else {
-					if (OptionMap[MAP_Y * (cord.X) + (cord.Y)].X - 0.001 > 0)
-						OptionMap[MAP_Y * (cord.X) + (cord.Y)].X -= 0.001;
+					if (OptionMap[MAP_Y * (cord.X) + (cord.Y)].X - 0.0001 > 0)
+						OptionMap[MAP_Y * (cord.X) + (cord.Y)].X -= 0.0001;
 
+					list.push_back(cord);
 					cord.X = cor.X;
 					cord.Y = cor.Y;
 				}
@@ -159,7 +164,7 @@ public:
 				}
 
 				
-				S[MAP_Y * (j) + (i)] = (OptionMap[MAP_Y * (j)+(i)].X-(sum/F))*0.00025;
+				S[MAP_Y * (j) + (i)] = (OptionMap[MAP_Y * (j)+(i)].X-(sum/F))*0.000025;
 			}
 		}
 

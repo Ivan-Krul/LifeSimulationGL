@@ -67,6 +67,30 @@ void Simulation::GeneAction() {
 
 void Simulation::GeneRetarget() {
 	for (list<Cell>::iterator iter = Cells.begin(); iter != Cells.end(); iter++) {
+		if (iter->GetEnergy() < 0) {
+			for (int ii = -1;ii < 2;ii++) {
+				for (int jj = -1;jj < 2;jj++) {
 
+					if (IsInMap((iter->GetCoord().X + jj), (iter->GetCoord().Y + ii)) && ii+jj!=0) {
+						pMap->SetMineralMap(iter->GetCoord().X + jj, iter->GetCoord().Y + ii, 5);
+					}
+
+				}
+			}
+
+			Cells.erase(iter);
+		}
 	}
+}
+
+void Simulation::Paint() {
+	float a = 0.0;
+	for (int i = 0;i < MAP_X;i++)
+		for (int j = 0;j < MAP_Y;j++)
+			pMap->SetVisibleMap(i, j, false);
+
+	for (list<Cell>::iterator iter = Cells.begin(); iter != Cells.end(); iter++) {
+		pMap->SetVisibleMap(iter->GetCoord().X, iter->GetCoord().Y,true);
+	}
+	pPainter->Paint(*pMap, a);
 }

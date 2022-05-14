@@ -2,9 +2,8 @@
 #include <windows.h>
 #include <gl/gl.h>
 #include <string>
-#include "Random.h"
 #include "Define.h"
-#include "Painter.h"
+#include "Simulation.h"
 #include <chrono>
 
 #pragma comment(lib, "opengl32.lib")
@@ -13,9 +12,72 @@ LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 void EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
 void DisableOpenGL(HWND, HDC, HGLRC);
 
-Painter painter;
-Map map;
 float lv = 0.5;
+
+int DisplayResourceNAMessageBox(HWND hwnd, std::wstring title, std::wstring text, UINT type)
+{
+	int msgboxID = MessageBox(
+		hwnd,
+		text.c_str(),
+		title.c_str(),
+		type
+	);
+
+	//MB_ICONERROR
+	//MB_ICONSTOP
+	//MB_ICONHAND
+	//MB_ICONQUESTION
+	//MB_ICONWARNING
+	//MB_ICONEXCLAMATION 
+	//MB_ICONINFORMATION
+	//MB_ICONASTERISK 
+
+	//IDCANCEL
+	//IDTRYAGAIN
+	//IDCONTINUE
+	//IDABORT
+	//IDIGNORE
+	//IDNO
+	//IDOK
+	//IDRETRY
+	//IDYES
+
+	return msgboxID;
+}
+
+void AskSettings() {
+	std::wstring text = L"Application \"LifeSimulationGL\" use this settings\n";
+	text += L"Window width = " + std::to_wstring(WINDOW_X) + L'\n';
+	text += L"Window heigth = " + std::to_wstring(WINDOW_Y) + L'\n';
+	text += L"Window relation = " + std::to_wstring(WINDOW_RELATION) + L'\n';
+	text += L"Window frequency = " + std::to_wstring(WINDOW_FREQUENCY) + L'\n';
+	text += L'\n';
+	text += L"Map width = " + std::to_wstring(MAP_X) + L'\n';
+	text += L"Map heigth = " + std::to_wstring(MAP_Y) + L'\n';
+	text += L"Map scale = " + std::to_wstring(MAP_SCALE) + L'\n';
+	text += L"Map detailness = " + std::to_wstring(MAP_DETAIL_CHANGES) + L'\n';
+	text += L"Map octaves = " + std::to_wstring(MAP_NUM_OCTAVES) + L'\n';
+	text += L'\n';
+	text += L"Cell count of genes = " + std::to_wstring(CELL_COUNT_GENES) + L'\n';
+	text += L"Cell chance of mutation = " + std::to_wstring(CELL_CHANCE_MUTATION) + L'\n';
+	text += L"Cell started energy = " + std::to_wstring(CELL_STARTED_ENERGY) + L'\n';
+	text += L"Cell first number of gene = " + std::to_wstring(CELL_STARTED_NUM_GENE) + L'\n';
+	text += L'\n';
+	text += L"Simulation started count of cells = " + std::to_wstring(SIMULATION_STARTED_CELLS) + L'\n';
+
+	DisplayResourceNAMessageBox(NULL, L"Settings", text, NULL);
+}
+void AskHelp() {
+	std::wstring text = L"Application \"LifeSimulationGL\" use this keys\n";
+	text += L"Quit - ESCAPE\n";
+	text += L"Show keys - F1\n";
+	text += L"Change vision mode - TAB\n";
+	text += L"Restart - F4\n";
+	text += L"Change sea level - F6(if decrease), F7(if increase)\n";
+	text += L"Show settings - F10\n";
+
+	DisplayResourceNAMessageBox(NULL, L"Key helper", text, NULL);
+}
 
 int WINAPI WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -29,6 +91,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	MSG msg;
 	BOOL bQuit = FALSE;
 	float theta = 0.0f;
+	int ms;
 
 	/* register window class */
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -67,8 +130,16 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	/* enable OpenGL for the window */
 	EnableOpenGL(hwnd, &hDC, &hRC);
 
-	map.GenerateMap(GlobalSeed);
+	ms = DisplayResourceNAMessageBox(NULL, L"Launcher", L"Application \"LifeSimulationGL\" is launched", MB_ICONINFORMATION | MB_OKCANCEL);
+
+	if(ms == IDCANCEL)
+		return 0;
+	else {
+		AskSettings();
+	}
+
 	std::chrono::system_clock::time_point beg = std::chrono::system_clock::now(), end;
+	Simulation sim(50);
 
 	/* program main loop */
 	while (!bQuit)
@@ -78,9 +149,12 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			/* handle or dispatch messages */
+
 			if (msg.message == WM_QUIT)
 			{
-				bQuit = TRUE;
+				ms = DisplayResourceNAMessageBox(NULL, L"Launcher", L"Quit from application?", MB_ICONQUESTION | MB_YESNO);
+				if(ms== IDYES)
+					bQuit = TRUE;
 			}
 			else
 			{
@@ -92,26 +166,38 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		{
 			/* OpenGL animation code goes here */
 
-			beg = std::chrono::system_clock::now();
+			//beg = std::chrono::system_clock::now();
 
 			if (GetAsyncKeyState(VK_F4)) {
-				map.GenerateMap(GlobalSeed+int(theta));
+				//map.GenerateMap(GlobalSeed+int(theta));
 			}
 			if (GetAsyncKeyState(VK_F6)) {
-				lv -= 0.0025;
+				lv -= 0.01;
 			}
 			if (GetAsyncKeyState(VK_F7)) {
-				lv += 0.0025;
+				lv += 0.01;
 			}
 			if (GetAsyncKeyState(VK_TAB)) {
-				painter.SwitchMode();
+				//painter.SwitchMode();
+			}
+			if (GetAsyncKeyState(VK_F10)) {
+				AskSettings();
+			}
+			if (GetAsyncKeyState(VK_F1)) {
+				AskHelp();
+			}
+			if (GetAsyncKeyState(' ')) {
+				//map.Erode(256);
 			}
 
 
 			glClearColor(0, 0, 0, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			painter.Paint(map,lv );
+			sim.GeneSwitch();
+			sim.GeneAction();
+			sim.GeneRetarget();
+			sim.Paint();
 
 			SwapBuffers(hDC);
 
@@ -123,10 +209,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 			SetWindowText(hwnd, text.c_str());
 
-
-
 			theta += 1.0f;
-			Sleep(1000.0/WINDOW_FREQUENCY);
+			Sleep((1000.0/WINDOW_FREQUENCY));
 		}
 	}
 

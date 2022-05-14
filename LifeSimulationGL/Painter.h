@@ -56,64 +56,69 @@ public:
 			for (int j = 0;j < MAP_Y;j++) {
 				glPushMatrix();
 				glTranslatef(i, j, 0.0f);
+				if (!map.GetVisibleMap(i, j)) {
+					switch (MapMode)
+					{
+					case 0:
 
-				switch (MapMode)
-				{
-				case 0:
-					if (map.GetLandMap(i, j) > t) {
+						if (map.GetLandMap(i, j) > t) {
 
-						if (map.GetLandMap(i, j) - t < 0.01)
-							glColor3d(0.6, 0.6, 0.1);
-						else {
-							double S = (map.GetPlainLandMap(i, j) - mn) / (mx - mn);
+							if (map.GetLandMap(i, j) - t < 0.01)
+								glColor3d(0.6, 0.6, 0.1);
+							else {
+								double S = (map.GetPlainLandMap(i, j) - mn) / (mx - mn);
 
-							double r1 = 0.3;
-							double g1 = 0.7;
-							double b1 = 0.1;
-							double r2 = 0.3;
-							double g2 = 0.2;
-							double b2 = 0.05;
+								double r1 = 0.3;
+								double g1 = 0.7;
+								double b1 = 0.1;
+								double r2 = 0.3;
+								double g2 = 0.2;
+								double b2 = 0.05;
 
-							glColor3d(
-								((r1 - r2) * S + r2) * (map.GetLandMap(i, j) + 0.5 * 0.5),
-								((g1 - g2) * S + g2) * (map.GetLandMap(i, j) + 0.5 * 0.5),
-								((b1 - b2) * S + b2) * (map.GetLandMap(i, j) + 0.5 * 0.5));
+								glColor3d(
+									((r1 - r2) * S + r2) * (map.GetLandMap(i, j) + 0.5 * 0.5),
+									((g1 - g2) * S + g2) * (map.GetLandMap(i, j) + 0.5 * 0.5),
+									((b1 - b2) * S + b2) * (map.GetLandMap(i, j) + 0.5 * 0.5));
+							}
+
 						}
+						else glColor3d(map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j));
 
-					}
-					else glColor3d(map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j));
+						DrawQuad();
+						break;
+					case 1:
+						if (map.GetLandMap(i, j) > t)
+							glColor3d(map.GetLandMap(i, j), map.GetLandMap(i, j), map.GetLandMap(i, j));
+						else
+							glColor3d(map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j));
 
-					DrawQuad();
-					break;
-				case 1:
-					if (map.GetLandMap(i, j) > t)
+						DrawQuad();
+						break;
+					case 2:
 						glColor3d(map.GetLandMap(i, j), map.GetLandMap(i, j), map.GetLandMap(i, j));
-					else 
-						glColor3d(map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j) - 0.3, map.GetLandMap(i, j));
 
-					DrawQuad();
-					break;
-				case 2:
-					glColor3d(map.GetLandMap(i, j), map.GetLandMap(i, j), map.GetLandMap(i, j));
+						DrawQuad();
+						break;
+					case 3:
+						glColor3d(map.GetSunMap(i, j), map.GetSunMap(i, j), map.GetSunMap(i, j) - 0.2);
 
-					DrawQuad();
-					break;
-				case 3:
-					glColor3d(map.GetSunMap(i, j), map.GetSunMap(i, j), map.GetSunMap(i, j)-0.2);
+						DrawQuad();
+						break;
+					case 4:
+						glColor3d(map.GetLandMap(i, j) - 0.1, map.GetLandMap(i, j) - 0.1, map.GetLandMap(i, j));
 
-					DrawQuad();
-					break;
-				case 4:
-					glColor3d(map.GetLandMap(i, j)-0.1, map.GetLandMap(i, j)-0.1, map.GetLandMap(i, j));
-
-					DrawQuad();
-					break;
-				case 5:
-					break;
-				default:
-					break;
+						DrawQuad();
+						break;
+					case 5:
+						break;
+					default:
+						break;
+					}
 				}
-
+				else {
+				glColor3f(1, 0, 0);
+				DrawCell();
+				}
 				glPopMatrix();
 			}
 		}

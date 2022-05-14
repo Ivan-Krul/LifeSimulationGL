@@ -1,7 +1,6 @@
 #pragma once
 #include <list>
 #include "Cell.h"
-#include "Map.h"
 #include "Painter.h"
 #include "Random.h"
 
@@ -18,5 +17,7 @@ public:
 	void GeneSwitch();
 	void GeneAction();
 	void GeneRetarget();
+
+	void Paint();
 };
 

@@ -39,7 +39,7 @@ public:
 		}
 	}
 
-	Cell(Cell& cell) {
+	Cell(Cell& cell,int x) {
 		Energy = cell.GetEnergy() / 2;
 		cell.SetEnergy(cell.GetEnergy() / 2);
 

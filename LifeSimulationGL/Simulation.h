@@ -3,6 +3,7 @@
 #include "Cell.h"
 #include "Map.h"
 #include "Painter.h"
+#include "Random.h"
 
 using std::list;
 
@@ -11,7 +12,11 @@ class Simulation {
 	Map* pMap;
 	Painter* pPainter;
 
-	Simulation();
+public:
+	Simulation(int cnt);
 
+	void GeneSwitch();
+	void GeneAction();
+	void GeneRetarget();
 };
 

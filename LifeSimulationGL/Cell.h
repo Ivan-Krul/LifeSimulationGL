@@ -62,6 +62,14 @@ public:
 		return Gene[I % (CELL_COUNT_GENES * 2)];
 	}
 
+	void ChangeEnergy(int16_t energy) {
+		Energy += energy;
+	}
+
+	void SwitchCommand(int8_t change) {
+		IterGene += change * 2;
+	}
+
 	void SetEnergy(uint16_t energy) {
 		Energy = energy;
 	}
@@ -70,8 +78,25 @@ public:
 		return Gene[IterGene * 2] + Gene[IterGene * 2 + 1] * 256;
 	}
 
+	void SetWait() {
+		Wait = Gene[IterGene * 2 + 1];
+	}
+
+	void Waitt() {
+		Wait--;
+	}
+
+	bool IsWait() {
+		return Wait != 0;
+	}
+
 	uint16_t GetEnergy() {
 		return Energy;
+	}
+
+	void SetCoord(int x,int y) {
+		Coord.X = x;
+		Coord.Y = y;
 	}
 
 	COORD GetCoord() {

@@ -1,15 +1,80 @@
 #pragma once
 #include <windows.h>
 #include <gl/gl.h>
+#include <string>
 #include "Define.h"
+#include "Cell.h"
 #include "Map.h"
 #pragma comment(lib, "opengl32.lib")
 
 class Painter {
 	char MapMode = 0;
+	unsigned long long T = 0;
 public:
 	void SwitchMode() {
 		MapMode= ++MapMode%6;
+	}
+
+	void line(double x1, double y1, double x2, double y2) { glVertex2f(x1, y1);glVertex2f(x2, y2); }
+
+	void ShowNumber(int num) {
+		glBegin(GL_LINES);
+		if (num == '"' || num == '#' || num == '$' || num == '%' || num == '&' || num == '\'' || num == '(' ||
+			num == '0' || num == '4' || num == '5' || num == '6' || num == '8' || num == '9' ||
+			num == 'L' || num == 'V'
+			) line(0.15, 0.85, 0.15, 0.5);
+		if (num == '#' || num == '$' || num == '&' || num == '(' ||
+			num == '0' || num == '2' || num == '6' || num == '8' ||
+			num == 'L'
+			) line(0.15, 0.5, 0.15, 0.15);
+		if (num == '$' || num == '%' || num == '&' || num == '(' || num == ')' ||
+			num == '0' || num == '2' || num == '3' || num == '5' || num == '6' || num == '7' || num == '8' || num == '9'
+			
+			) line(0.15, 0.85, 0.85, 0.85);
+		if (num == '$' || num == '&' ||
+			num == '2' || num == '3' || num == '4' || num == '5' || num == '6' || num == '8' || num == '9' || num == ':'
+			
+			) line(0.15, 0.5, 0.85, 0.5);
+		if (num == '$' || num == '%' || num == '&' || num == '(' || num == ')' ||
+			num == '0' || num == '2' || num == '3' || num == '5' || num == '6' || num == '8' || num == '9' || num == ':' ||
+			num == 'L' || num == 'V' 
+			) line(0.15, 0.15, 0.85, 0.15);
+		if (num == '!' || num == '"' || num == '#' || num == '&' || num == ')' ||
+			num == '0' || num == '1' || num == '2' || num == '3' || num == '4' || num == '7' || num == '8' || num == '9' ||
+			num == 'V'
+			) line(0.85, 0.5, 0.85, 0.85);
+		if (num == '%' || num == ')' ||
+			num == '0' || num == '1' || num == '3' || num == '4' || num == '5' || num == '6' || num == '7' || num == '8' || num == '9' ||
+			num == 'V'
+			) line(0.85, 0.5, 0.85, 0.15);
+		glEnd();
+	}
+
+	void DrawInterface() {
+		glColor3i(1, 0, 0);
+		glLineWidth(2);
+		unsigned long long gT = T;
+		int s = 0;
+
+		while (gT != 0) {
+			glPushMatrix();
+			
+			double X = ((MAP_X)*WINDOW_RELATION)*0.85;
+			double Y = (MAP_Y) * 0.05;
+			//glTranslatef(1, 1, 0);
+			glScalef(2.5f, 5.0f, 0.0f);
+			X /= 2.5;
+			Y /= 5.0;
+
+			glTranslatef(X - (s * 1.0), Y, 0.0f);
+			glColor3f(1, 1, 1);
+			//DrawQuad();
+			ShowNumber(std::to_string(gT % 10)[0]);
+			glEnd();
+			glPopMatrix();
+			s++;
+			gT /= 10;
+		}
 	}
 
 	void DrawQuad() {
@@ -23,6 +88,10 @@ public:
 		glEnd();
 	}
 
+	unsigned long long GetT() {
+		return T;
+	}
+
 	void DrawCell() {
 		glBegin(GL_TRIANGLE_STRIP);
 
@@ -31,12 +100,10 @@ public:
 		glVertex2f(1, 0);
 		glVertex2f(1, 1);
 
-
-
 		glEnd();
 	}
 
-	void Paint(Map& map,float& t) {
+	void Paint(Map& map,vector<Cell>& cell,float& t) {
 		glLoadIdentity();
 		glTranslatef(-1.0f, -1.0f, 0.0f);
 		glScalef(WINDOW_RELATION / MAP_X, 2.0f / MAP_Y, 0.0f);
@@ -49,8 +116,6 @@ public:
 				mx = max(mx, map.GetPlainLandMap(i, j));
 			}
 		}
-
-
 		
 		for (int i = 0;i < MAP_X;i++) {
 			for (int j = 0;j < MAP_Y;j++) {
@@ -116,13 +181,23 @@ public:
 					}
 				}
 				else {
-				glColor3f(1, 0, 0);
+					for (int c = 0;c < cell.size();c++) {
+						COORD cord = cell[c].GetCoord();
+						if (cord.X == i && cord.Y == j) {
+							glColor3ub(cell[c].GetColorRed(), cell[c].GetColorGreen(), cell[c].GetColorBlue());
+							break;
+						}
+
+					}
 				DrawCell();
 				}
 				glPopMatrix();
 			}
 		}
-		
+
+		DrawInterface();
+
+		T++;
 	}
 };
 

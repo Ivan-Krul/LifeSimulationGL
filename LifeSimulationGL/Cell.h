@@ -22,43 +22,60 @@ class Cell {
 	uint8_t	IterGene;
 	uint8_t Wait;
 	uint16_t Energy;
+	uint8_t Col[3];
 public:
-	Cell(COORD coord) {
+	void Init(COORD coord) {
+		RandomByte rand(coord.X * MAP_Y + coord.Y);
+
 		Coord = coord;
 
 		IterGene = CELL_STARTED_NUM_GENE;
-		Energy = CELL_STARTED_ENERGY;
+		Energy = CELL_STARTED_ENERGY + rand.Next(255);
 		Wait = 0;
 
-		RandomByte rand;
+		Col[0] = rand.Next(128) + 64;
+		Col[1] = rand.Next(128) + 64;
+		Col[2] = rand.Next(128) + 64;
 
-		for (int i = 0;i < CELL_COUNT_GENES*2;i++) {
+		for (int i = 0;i < CELL_COUNT_GENES * 2;i++) {
 			if (i % 2 == 0) Gene[i] = rand.Next(8);
 			else if (Gene[i - 1] == Nothing) Gene[i] = rand.Next(16);
 			else Gene[i] = rand.Next(8);
 		}
 	}
 
-	Cell(Cell& cell,int x) {
+	void Init(Cell& cell) {
 		Energy = cell.GetEnergy() / 2;
 		cell.SetEnergy(cell.GetEnergy() / 2);
 
 		IterGene = cell.IterGene;
 
-		RandomFloat random;
+		RandomFloat random(cell.GetCoord().X*MAP_Y+ cell.GetCoord().Y);
 		RandomInt ran(random.Next());
 
 		for (int i = 0;i < CELL_COUNT_GENES * 2;i++) {
 			Gene[i] = cell.GetGene(i);
 
 			if (random.Next(1) < CELL_CHANCE_MUTATION) {
-				
+
 				Gene[i] += ran.Next(-1, 1);
 			}
 		}
 	}
 
-	uint8_t GetGene(int I) {
+	uint8_t& GetColorRed() {
+		return Col[0];
+	}
+
+	uint8_t& GetColorGreen() {
+		return Col[1];
+	}
+
+	uint8_t& GetColorBlue() {
+		return Col[2];
+	}
+
+	uint8_t& GetGene(int I) {
 		return Gene[I % (CELL_COUNT_GENES * 2)];
 	}
 
@@ -90,7 +107,7 @@ public:
 		return Wait != 0;
 	}
 
-	uint16_t GetEnergy() {
+	uint16_t& GetEnergy() {
 		return Energy;
 	}
 
@@ -99,7 +116,7 @@ public:
 		Coord.Y = y;
 	}
 
-	COORD GetCoord() {
+	COORD& GetCoord() {
 		return Coord;
 	}
 };

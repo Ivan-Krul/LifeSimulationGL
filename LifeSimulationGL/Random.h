@@ -2,37 +2,64 @@
 #include <ctime>
 #include <cmath>
 
-static unsigned long long GlobalSeed = time(NULL);
+static class GlobalRandom {
+	unsigned long long X;
+	unsigned long long a;
+	unsigned long long c;
+	unsigned long long seed;
+public:
+	GlobalRandom() {
+		Init();
+	}
+
+	void Init() {
+		seed = time(NULL);
+		X = seed;
+		a = 214013;
+		c = 2531011;
+	}
+	void Init(unsigned long long Seed) {
+		seed = Seed;
+		X = seed;
+		a = 214013;
+		c = 2531011;
+	}
+
+	unsigned long long GiveSeed() {
+		X = X * a + c;
+		return X;
+	}
+};
+
+static GlobalRandom global;
 
 class RandomLongLong {
-	typedef unsigned long long RandVar;
-
-	RandVar X;
-	RandVar a;
-	RandVar c;
-	RandVar seed;
+	unsigned long long X;
+	unsigned long long a;
+	unsigned long long c;
+	unsigned long long seed;
 	size_t iter;
 
 public:
 	RandomLongLong() {
-		seed = GlobalSeed;
+		seed = global.GiveSeed();
 
 		Restart();
 	}
 
-	RandomLongLong(RandVar seed) {
+	RandomLongLong(unsigned long long seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	void ChangeSeed(RandVar seed) {
+	void ChangeSeed(unsigned long long seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	RandVar GetSeed() {
+	unsigned long long GetSeed() {
 		return seed;
 	}
 
@@ -40,7 +67,7 @@ public:
 		return iter;
 	}
 
-	void ChangeRules(RandVar a, RandVar c) {
+	void ChangeRules(unsigned long long a, unsigned long long c) {
 		this->a = a;
 		this->c = c;
 		X = seed;
@@ -55,19 +82,19 @@ public:
 		c = 2531011;
 	}
 
-	RandVar Next() {
+	unsigned long long Next() {
 		X = X * a + c;
 		iter++;
 		return X;
 	}
 
-	RandVar Next(RandVar board) {
+	unsigned long long Next(unsigned long long board) {
 		X = X * a + c;
 		iter++;
 		return X % board;
 	}
 
-	RandVar Next(RandVar left, RandVar rigth) {
+	unsigned long long Next(unsigned long long left, unsigned long long rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth - left)) + left;
@@ -75,34 +102,32 @@ public:
 };
 
 class RandomInt {
-	typedef unsigned int RandVar;
-
-	RandVar X;
-	RandVar a;
-	RandVar c;
-	RandVar seed;
+	unsigned int X;
+	unsigned int a;
+	unsigned int c;
+	unsigned int seed;
 	size_t iter;
 
 public:
 	RandomInt() {
-		seed = GlobalSeed;
+		seed = global.GiveSeed();
 
 		Restart();
 	}
 
-	RandomInt(RandVar seed) {
+	RandomInt(unsigned int seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	void ChangeSeed(RandVar seed) {
+	void ChangeSeed(unsigned int seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	RandVar GetSeed() {
+	unsigned int GetSeed() {
 		return seed;
 	}
 
@@ -110,7 +135,7 @@ public:
 		return iter;
 	}
 
-	void ChangeRules(RandVar a, RandVar c) {
+	void ChangeRules(unsigned int a, unsigned int c) {
 		this->a = a;
 		this->c = c;
 		X = seed;
@@ -125,19 +150,19 @@ public:
 		c = 2531011;
 	}
 
-	RandVar Next() {
+	unsigned int Next() {
 		X = X * a + c;
 		iter++;
 		return X;
 	}
 
-	RandVar Next(RandVar board) {
+	unsigned int Next(unsigned int board) {
 		X = X * a + c;
 		iter++;
 		return X % board;
 	}
 
-	RandVar Next(RandVar left, RandVar rigth) {
+	unsigned int Next(unsigned int left, unsigned int rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth-left))+left;
@@ -147,32 +172,32 @@ public:
 class RandomShort {
 	typedef unsigned short RandVar;
 
-	RandVar X;
-	RandVar a;
-	RandVar c;
-	RandVar seed;
+	unsigned short X;
+	unsigned short a;
+	unsigned short c;
+	unsigned short seed;
 	size_t iter;
 
 public:
 	RandomShort() {
-		seed = GlobalSeed;
+		seed = global.GiveSeed();
 
 		Restart();
 	}
 
-	RandomShort(RandVar seed) {
+	RandomShort(unsigned short seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	void ChangeSeed(RandVar seed) {
+	void ChangeSeed(unsigned short seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	RandVar GetSeed() {
+	unsigned short GetSeed() {
 		return seed;
 	}
 
@@ -180,7 +205,7 @@ public:
 		return iter;
 	}
 
-	void ChangeRules(RandVar a, RandVar c) {
+	void ChangeRules(unsigned short a, unsigned short c) {
 		this->a = a;
 		this->c = c;
 		X = seed;
@@ -195,19 +220,19 @@ public:
 		c = 2531011;
 	}
 
-	RandVar Next() {
+	unsigned short Next() {
 		X = X * a + c;
 		iter++;
 		return X;
 	}
 
-	RandVar Next(RandVar board) {
+	unsigned short Next(unsigned short board) {
 		X = X * a + c;
 		iter++;
 		return X % board;
 	}
 
-	RandVar Next(RandVar left, RandVar rigth) {
+	unsigned short Next(unsigned short left, unsigned short rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth - left)) + left;
@@ -215,34 +240,32 @@ public:
 };
 
 class RandomByte {
-	typedef unsigned char RandVar;
-
-	RandVar X;
-	RandVar a;
-	RandVar c;
-	RandVar seed;
+	unsigned char X;
+	unsigned char a;
+	unsigned char c;
+	unsigned char seed;
 	size_t iter;
 
 public:
 	RandomByte() {
-		seed = GlobalSeed;
+		seed = global.GiveSeed();
 
 		Restart();
 	}
 
-	RandomByte(RandVar seed) {
+	RandomByte(unsigned char seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	void ChangeSeed(RandVar seed) {
+	void ChangeSeed(unsigned char seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	RandVar GetSeed() {
+	unsigned char GetSeed() {
 		return seed;
 	}
 
@@ -250,7 +273,7 @@ public:
 		return iter;
 	}
 
-	void ChangeRules(RandVar a, RandVar c) {
+	void ChangeRules(unsigned char a, unsigned char c) {
 		this->a = a;
 		this->c = c;
 		X = seed;
@@ -265,19 +288,19 @@ public:
 		c = 2531011;
 	}
 
-	RandVar Next() {
+	unsigned char Next() {
 		X = X * a + c;
 		iter++;
 		return X;
 	}
 
-	RandVar Next(RandVar board) {
+	unsigned char Next(unsigned char board) {
 		X = X * a + c;
 		iter++;
 		return X % board;
 	}
 
-	RandVar Next(RandVar left, RandVar rigth) {
+	unsigned char Next(unsigned char left, unsigned char rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth - left)) + left;
@@ -285,34 +308,32 @@ public:
 };
 
 class RandomFloat {
-	typedef unsigned int RandVar;
-
-	RandVar X;
-	RandVar a;
-	RandVar c;
-	RandVar seed;
+	unsigned int X;
+	unsigned int a;
+	unsigned int c;
+	unsigned int seed;
 	size_t iter;
 
 public:
 	RandomFloat() {
-		seed = GlobalSeed;
+		seed = global.GiveSeed();
 
 		Restart();
 	}
 
-	RandomFloat(RandVar seed) {
+	RandomFloat(unsigned int seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	void ChangeSeed(RandVar seed) {
+	void ChangeSeed(unsigned int seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	RandVar GetSeed() {
+	unsigned int GetSeed() {
 		return seed;
 	}
 
@@ -320,7 +341,7 @@ public:
 		return iter;
 	}
 
-	void ChangeRules(RandVar a, RandVar c) {
+	void ChangeRules(unsigned int a, unsigned int c) {
 		this->a = a;
 		this->c = c;
 		X = seed;
@@ -355,34 +376,32 @@ public:
 };
 
 class RandomDouble {
-	typedef unsigned int RandVar;
-
-	RandVar X;
-	RandVar a;
-	RandVar c;
-	RandVar seed;
+	unsigned int X;
+	unsigned int a;
+	unsigned int c;
+	unsigned int seed;
 	size_t iter;
 
 public:
 	RandomDouble() {
-		seed = GlobalSeed;
+		seed = global.GiveSeed();
 
 		Restart();
 	}
 
-	RandomDouble(RandVar seed) {
+	RandomDouble(unsigned int seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	void ChangeSeed(RandVar seed) {
+	void ChangeSeed(unsigned int seed) {
 		this->seed = seed;
 
 		Restart();
 	}
 
-	RandVar GetSeed() {
+	unsigned int GetSeed() {
 		return seed;
 	}
 
@@ -390,7 +409,7 @@ public:
 		return iter;
 	}
 
-	void ChangeRules(RandVar a, RandVar c) {
+	void ChangeRules(unsigned int a, unsigned int c) {
 		this->a = a;
 		this->c = c;
 		X = seed;

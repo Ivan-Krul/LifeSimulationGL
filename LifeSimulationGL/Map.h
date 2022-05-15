@@ -5,12 +5,18 @@
 #include "Variables.h"
 #include <vector>
 
+using std::vector;
+
 class Map {
 	Point3<double>* OptionMap;
 	bool* VisibleMap;
 
 	double Func(double x) {
 		return pow(x,1);
+	}
+
+	bool IsInMap(int x, int y) {
+		return (0 <= x) && (x < MAP_X) && (0 <= y) && (y < MAP_Y);
 	}
 public:
 	Map() {
@@ -77,7 +83,7 @@ public:
 	}
 
 	void Erode(int cnt) {
-		RandomInt random(cnt+GlobalSeed);
+		RandomInt random;
 		std::vector<Point2<int>> list;
 		Point2<int> cord;
 		for (int s = 0;s < cnt;s++) {
@@ -190,19 +196,19 @@ public:
 		delete[] S;
 	}
 
-	double GetLandMap(int x, int y) {
+	double& GetLandMap(int x, int y) {
 		return OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].X;
 	}
 
-	double GetSunMap(int x, int y) {
+	double& GetSunMap(int x, int y) {
 		return OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].Y;
 	}
 
-	double GetMineralMap(int x, int y) {
+	double& GetMineralMap(int x, int y) {
 		return OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].Z;
 	}
 
-	bool GetVisibleMap(int x, int y) {
+	bool& GetVisibleMap(int x, int y) {
 		return VisibleMap[(x % MAP_X) + (y % MAP_Y) * MAP_X];
 	}
 

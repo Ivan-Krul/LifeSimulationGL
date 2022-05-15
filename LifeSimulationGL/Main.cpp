@@ -139,7 +139,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	}
 
 	std::chrono::system_clock::time_point beg = std::chrono::system_clock::now(), end;
-	Simulation sim(50);
+	Simulation sim;
+	sim.Init(1200);
 
 	/* program main loop */
 	while (!bQuit)
@@ -169,34 +170,37 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			//beg = std::chrono::system_clock::now();
 
 			if (GetAsyncKeyState(VK_F4)) {
-				//map.GenerateMap(GlobalSeed+int(theta));
+				Sleep((10000.0 / WINDOW_FREQUENCY));
 			}
 			if (GetAsyncKeyState(VK_F6)) {
 				lv -= 0.01;
+				Sleep((10000.0 / WINDOW_FREQUENCY));
 			}
 			if (GetAsyncKeyState(VK_F7)) {
 				lv += 0.01;
+				Sleep((10000.0 / WINDOW_FREQUENCY));
 			}
 			if (GetAsyncKeyState(VK_TAB)) {
-				//painter.SwitchMode();
+				sim.SwitchMode();
+				Sleep((10000.0 / WINDOW_FREQUENCY));
 			}
 			if (GetAsyncKeyState(VK_F10)) {
 				AskSettings();
+				Sleep((10000.0 / WINDOW_FREQUENCY));
 			}
 			if (GetAsyncKeyState(VK_F1)) {
 				AskHelp();
+				Sleep((10000.0 / WINDOW_FREQUENCY));
 			}
 			if (GetAsyncKeyState(' ')) {
-				//map.Erode(256);
+				Sleep((10000.0 / WINDOW_FREQUENCY));
 			}
 
 
 			glClearColor(0, 0, 0, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			sim.GeneSwitch();
-			sim.GeneAction();
-			sim.GeneRetarget();
+			//sim.Do();
 			sim.Paint();
 
 			SwapBuffers(hDC);

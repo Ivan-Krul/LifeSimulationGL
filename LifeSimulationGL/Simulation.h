@@ -10,6 +10,9 @@ class Simulation {
 	Map* pMap;
 	Painter* pPainter;
 
+	float BiasLS = 0.15;
+	float LS = BiasLS;
+
 	bool IsInMap(int x, int y) {
 		return (0 <= x) && (x < MAP_X) && (0 <= y) && (y < MAP_Y);
 	}

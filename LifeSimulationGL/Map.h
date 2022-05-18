@@ -24,11 +24,11 @@ public:
 		VisibleMap = new bool[MAP_X * MAP_Y];
 	}
 
-	void GenerateMap(int seed) {
-		RandomInt* a = new RandomInt(seed);
+	void GenerateMap() {
+		RandomInt* a = new RandomInt();
 		PerlinNoise PN[MAP_NUM_OCTAVES*3];
 
-		for (int o = 0;o < MAP_NUM_OCTAVES;o++) {
+		for (int o = 0;o < MAP_NUM_OCTAVES * 3;o++) {
 			PN[o].Init(a->Next());
 		}
 
@@ -44,7 +44,7 @@ public:
 		for (int i = 0;i < MAP_Y;i++) {
 			for (int j = 0;j < MAP_X;j++) {
 
-				OptionMap[MAP_Y * j+i].X = 0;
+				OptionMap[MAP_Y * j + i].X = 0;
 				OptionMap[MAP_Y * j + i].Y = 0;
 				OptionMap[MAP_Y * j + i].Z = 0;
 
@@ -53,10 +53,11 @@ public:
 					double k = pow(MAP_DETAIL_CHANGES, double(o % MAP_NUM_OCTAVES));
 
 					if (o / MAP_NUM_OCTAVES == 0)
-						OptionMap[MAP_Y * j + i].X += PN[o].noise(double(j * k*(1.0/MAP_SCALE)) / MAP_X, double(i * k * (1.0 / MAP_SCALE)) / MAP_Y, 0.0)*c;
+						OptionMap[MAP_Y * j + i].X += PN[o].noise(double(j * k * (1.0 / MAP_SCALE)) / MAP_X, double(i * k * (1.0 / MAP_SCALE)) / MAP_Y, 0.0) * c;
 					else if (o / MAP_NUM_OCTAVES == 1)
 						OptionMap[MAP_Y * j + i].Y += PN[o].noise(double(j * k * (1.0 / MAP_SCALE)) / MAP_X, double(i * k * (1.0 / MAP_SCALE)) / MAP_Y, 0.0) * c;
-					else OptionMap[MAP_Y * j + i].X += PN[o].noise(double(j * k * (1.0 / MAP_SCALE)) / MAP_X, double(i * k * (1.0 / MAP_SCALE)) / MAP_Y, 0.0) * c;
+					else if (o / MAP_NUM_OCTAVES == 2)
+						OptionMap[MAP_Y * j + i].Z += PN[o].noise(double(j * k * (1.0 / MAP_SCALE)) / MAP_X, double(i * k * (1.0 / MAP_SCALE)) / MAP_Y, 0.0) * c;
 
 				}
 				OptionMap[MAP_Y * j + i].X = Func(OptionMap[MAP_Y * j + i].X);
@@ -214,6 +215,14 @@ public:
 
 	void SetMineralMap(int x, int y,double change) {
 		OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].Z += change;
+		if (OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].Z < 0)OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].Z = 0;
+		else if (OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].Z > 1)OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].Z = 1;
+	}
+
+	void SetLandMap(int x, int y, double change) {
+		OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].X += change;
+		if (OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].X < 0)OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].X = 0;
+		else if (OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].X > 1)OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].X = 1;
 	}
 
 	void SetVisibleMap(int x, int y, bool change) {
@@ -236,8 +245,12 @@ public:
 			}
 		}
 
-		return OptionMap[MAP_Y * (x) + (y)].X-(sum / F);
+		return OptionMap[MAP_Y * (x) + (y)].X-(sum / (F*2));
 
+	}
+
+	bool IsSea(int x, int y, float l) {
+		return OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].X < l;
 	}
 
 	~Map() {

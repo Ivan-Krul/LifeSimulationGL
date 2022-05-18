@@ -134,13 +134,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 	if(ms == IDCANCEL)
 		return 0;
-	else {
-		AskSettings();
-	}
 
 	std::chrono::system_clock::time_point beg = std::chrono::system_clock::now(), end;
 	Simulation sim;
-	sim.Init(1200);
+	sim.Init(SIMULATION_STARTED_CELLS);
 
 	/* program main loop */
 	while (!bQuit)
@@ -201,6 +198,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			//sim.Do();
+			sim.GeneRetarget();
+			sim.GeneSwitch();
+			sim.GeneAction();
 			sim.Paint();
 
 			SwapBuffers(hDC);

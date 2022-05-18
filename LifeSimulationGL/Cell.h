@@ -59,6 +59,9 @@ public:
 			if (random.Next(1) < CELL_CHANCE_MUTATION) {
 
 				Gene[i] += ran.Next(-1, 1);
+				if (i % 2 == 1) {
+					Gene[i] %= 8;
+				}
 			}
 		}
 	}

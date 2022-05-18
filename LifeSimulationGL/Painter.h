@@ -170,7 +170,7 @@ public:
 						DrawQuad();
 						break;
 					case 4:
-						glColor3d(map.GetLandMap(i, j) - 0.1, map.GetLandMap(i, j) - 0.1, map.GetLandMap(i, j));
+						glColor3d(map.GetMineralMap(i, j) - 0.1, map.GetMineralMap(i, j) - 0.1, map.GetMineralMap(i, j));
 
 						DrawQuad();
 						break;

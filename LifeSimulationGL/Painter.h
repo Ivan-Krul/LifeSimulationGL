@@ -92,21 +92,10 @@ public:
 		return T;
 	}
 
-	void DrawCell() {
-		glBegin(GL_TRIANGLE_STRIP);
-
-		glVertex2f(0, 0);
-		glVertex2f(0, 1);
-		glVertex2f(1, 0);
-		glVertex2f(1, 1);
-
-		glEnd();
-	}
-
 	void Paint(Map& map,vector<Cell>& cell,float& t) {
 		glLoadIdentity();
 		glTranslatef(-1.0f, -1.0f, 0.0f);
-		glScalef(WINDOW_RELATION / MAP_X, 2.0f / MAP_Y, 0.0f);
+		glScalef(WINDOW_RELATION*0.9 / MAP_X, 2.0f / MAP_Y, 0.0f);
 
 		double mn = INFINITY;
 		double mx = -INFINITY;
@@ -122,8 +111,7 @@ public:
 				glPushMatrix();
 				glTranslatef(i, j, 0.0f);
 				if (!map.GetVisibleMap(i, j)) {
-					switch (MapMode)
-					{
+					switch (MapMode) {
 					case 0:
 
 						if (map.GetLandMap(i, j) > t) {
@@ -132,7 +120,6 @@ public:
 								glColor3d(0.6, 0.6, 0.1);
 							else {
 								double S = (map.GetPlainLandMap(i, j) - mn) / (mx - mn);
-
 								double r1 = 0.3;
 								double g1 = 0.7;
 								double b1 = 0.1;
@@ -171,7 +158,6 @@ public:
 						break;
 					case 4:
 						glColor3d(map.GetMineralMap(i, j) - 0.1, map.GetMineralMap(i, j) - 0.1, map.GetMineralMap(i, j));
-
 						DrawQuad();
 						break;
 					case 5:
@@ -189,7 +175,7 @@ public:
 						}
 
 					}
-				DrawCell();
+					DrawQuad();
 				}
 				glPopMatrix();
 			}

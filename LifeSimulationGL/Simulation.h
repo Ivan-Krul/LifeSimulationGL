@@ -2,6 +2,7 @@
 #include "Cell.h"
 #include "Painter.h"
 #include "Random.h"
+#include <cassert>
 
 using std::vector;
 
@@ -10,12 +11,17 @@ class Simulation {
 	Map* pMap;
 	Painter* pPainter;
 
-	float BiasLS = 0.15;
+	float BiasLS = SIMULATION_STARTED_SEA_LEVEL;
 	float LS = BiasLS;
 
 	bool IsInMap(int x, int y) {
 		return (0 <= x) && (x < MAP_X) && (0 <= y) && (y < MAP_Y);
 	}
+private:
+	bool CellMoveChecker(int x, int y) {
+		return IsInMap(x, y) && !pMap->GetVisibleMap(x, y);// && !pMap->IsSea(x,y,LS);
+	}
+
 public:
 	void Init(int cnt);
 

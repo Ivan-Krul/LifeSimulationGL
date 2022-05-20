@@ -25,14 +25,14 @@ public:
 	}
 
 	void GenerateMap() {
-		RandomInt* a = new RandomInt();
+		//RandomInt* a = new RandomInt();
 		PerlinNoise PN[MAP_NUM_OCTAVES*3];
 
 		for (int o = 0;o < MAP_NUM_OCTAVES * 3;o++) {
-			PN[o].Init(a->Next());
+			PN[o].Init(global.GiveSeed());
 		}
 
-		delete a;
+		//delete a;
 
 		double mnX = INFINITY;
 		double mxX = -INFINITY;
@@ -249,7 +249,7 @@ public:
 
 	}
 
-	bool IsSea(int x, int y, float l) {
+	bool IsSea(unsigned int x, unsigned int y, float l) {
 		return OptionMap[(x % MAP_X) + (y % MAP_Y) * MAP_X].X < l;
 	}
 

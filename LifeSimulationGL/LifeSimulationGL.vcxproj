@@ -145,12 +145,14 @@
   <ItemGroup>
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="KeyManager.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Painter.h" />
     <ClInclude Include="Perlin.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Variables.h" />
     <ClInclude Include="Simulation.h" />
+    <ClInclude Include="workGL.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

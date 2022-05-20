@@ -94,7 +94,7 @@ public:
 		return X % board;
 	}
 
-	unsigned long long Next(unsigned long long left, unsigned long long rigth) {
+	long long Next(long long left, long long rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth - left)) + left;
@@ -162,7 +162,7 @@ public:
 		return X % board;
 	}
 
-	unsigned int Next(unsigned int left, unsigned int rigth) {
+	int Next(int left, int rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth-left))+left;
@@ -232,7 +232,7 @@ public:
 		return X % board;
 	}
 
-	unsigned short Next(unsigned short left, unsigned short rigth) {
+	short Next(short left, short rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth - left)) + left;
@@ -300,7 +300,7 @@ public:
 		return X % board;
 	}
 
-	unsigned char Next(unsigned char left, unsigned char rigth) {
+	char Next(char left, char rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth - left)) + left;

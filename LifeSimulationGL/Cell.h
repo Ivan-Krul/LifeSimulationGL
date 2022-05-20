@@ -18,14 +18,15 @@ enum Command : uint8_t {
 
 class Cell {
 	COORD Coord;
-	uint8_t Gene[CELL_COUNT_GENES*2];
+	uint8_t Gene[CELL_COUNT_GENES];
+	uint8_t Args[CELL_COUNT_GENES];
 	uint8_t	IterGene;
 	uint8_t Wait;
-	uint16_t Energy;
+	uint16_t Energy = 1;
 	uint8_t Col[3];
 public:
 	void Init(COORD coord) {
-		RandomByte rand(coord.X * MAP_Y + coord.Y);
+		RandomByte rand;
 
 		Coord = coord;
 
@@ -37,89 +38,67 @@ public:
 		Col[1] = rand.Next(128) + 64;
 		Col[2] = rand.Next(128) + 64;
 
-		for (int i = 0;i < CELL_COUNT_GENES * 2;i++) {
-			if (i % 2 == 0) Gene[i] = rand.Next(8);
-			else if (Gene[i - 1] == Nothing) Gene[i] = rand.Next(16);
-			else Gene[i] = rand.Next(8);
+		for (int i = 0;i < CELL_COUNT_GENES;i++) {
+			Gene[i] = rand.Next(3);
+			Args[i] = rand.Next(8);
 		}
 	}
 
-	void Init(Cell& cell) {
-		Energy = cell.GetEnergy() / 2;
+	void Init(Cell& cell, int H) {
 		cell.SetEnergy(cell.GetEnergy() / 2);
+		Energy = cell.GetEnergy();
 
 		IterGene = cell.IterGene;
+		Coord = cell.GetCoord();
 
-		RandomFloat random(cell.GetCoord().X*MAP_Y+ cell.GetCoord().Y);
-		RandomInt ran(random.Next());
+		RandomFloat random;
+		RandomByte ran;
 
-		for (int i = 0;i < CELL_COUNT_GENES * 2;i++) {
+		Col[0] = cell.GetColorRed();
+		Col[1] = cell.GetColorGreen();
+		Col[2] = cell.GetColorBlue();
+
+
+		for(int i=0;i<3;i++)
+			if (random.Next(1) < CELL_CHANCE_MUTATION)
+				Col[i] += ran.Next(-5, 5);
+
+		for (int i = 0;i < CELL_COUNT_GENES;i++) {
 			Gene[i] = cell.GetGene(i);
-
+			Args[i] = cell.GetArgs(i);
+			
 			if (random.Next(1) < CELL_CHANCE_MUTATION) {
-
-				Gene[i] += ran.Next(-1, 1);
-				if (i % 2 == 1) {
-					Gene[i] %= 8;
-				}
+				Gene[i] = ran.Next(3);
+				Args[i] = ran.Next(8);
 			}
 		}
 	}
 
-	uint8_t& GetColorRed() {
-		return Col[0];
-	}
+	uint8_t GetColorRed() { return Col[0]; }
+	uint8_t GetColorGreen() { return Col[1]; }
+	uint8_t GetColorBlue() { return Col[2]; }
 
-	uint8_t& GetColorGreen() {
-		return Col[1];
-	}
+	uint8_t GetGene(int I) { return Gene[I % CELL_COUNT_GENES]; }
+	uint8_t GetArgs(int I) { return Args[I % CELL_COUNT_GENES]; }
 
-	uint8_t& GetColorBlue() {
-		return Col[2];
-	}
+	uint8_t GetArgument() { return Args[IterGene]; }
+	uint8_t GetCommand() { return Gene[IterGene]; }
 
-	uint8_t& GetGene(int I) {
-		return Gene[I % (CELL_COUNT_GENES * 2)];
-	}
+	void SetEnergy(uint16_t energy) { Energy = energy; }
+	void ChangeEnergy(int16_t energy) { Energy += energy; }
+	uint16_t GetEnergy() { return Energy; }
 
-	void ChangeEnergy(int16_t energy) {
-		Energy += energy;
-	}
+	COORD& GetCoord() { return Coord; }
 
 	void SwitchCommand(int8_t change) {
-		IterGene += change * 2;
+		IterGene += change;
+		IterGene %= CELL_COUNT_GENES;
 	}
 
-	void SetEnergy(uint16_t energy) {
-		Energy = energy;
-	}
-
-	uint16_t GetCurrentCommand() {
-		return Gene[IterGene * 2] + Gene[IterGene * 2 + 1] * 256;
-	}
-
-	void SetWait() {
-		Wait = Gene[IterGene * 2 + 1];
-	}
-
-	void Waitt() {
-		Wait--;
-	}
-
-	bool IsWait() {
-		return Wait != 0;
-	}
-
-	uint16_t& GetEnergy() {
-		return Energy;
-	}
-
-	void SetCoord(int x,int y) {
-		Coord.X = x;
-		Coord.Y = y;
-	}
-
-	COORD& GetCoord() {
-		return Coord;
+	void SetCoord(short x, short y) {
+		if (&Coord.X != nullptr && &Coord.Y != nullptr) {
+			Coord.X = x;
+			Coord.Y = y;
+		}
 	}
 };

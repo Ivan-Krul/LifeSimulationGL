@@ -7,6 +7,8 @@ void Simulation::Init(int cnt) {
 	pMap = new Map();
 	pMap->GenerateMap();
 
+	Cell cll;
+
 	for (int i = 0;i < cnt;i++) {
 		short x = random.Next(MAP_X);
 		short y = random.Next(MAP_Y);
@@ -17,61 +19,242 @@ void Simulation::Init(int cnt) {
 		}
 
 		COORD S = { x,y };
-		Cells.push_back(Cell());
+		Cells.push_back(cll);
 		Cells[Cells.size() - 1].Init(S);
 	}
 }
 
 void Simulation::GeneSwitch() {
 	for (int iter = 0; iter != Cells.size(); iter++) {
+		int F = 0;
+		Cell& cell = Cells[iter];
+		for (int ii = -1;ii < 2;ii++) {
+			for (int jj = -1;jj < 2;jj++) {
 
-		if (!Cells[iter].IsWait())
-			Cells[iter].SwitchCommand(1);
-		else
-			Cells[iter].Waitt();
+				if (pMap->GetVisibleMap(ii + cell.GetCoord().X, jj + cell.GetCoord().Y))
+					F++;
 
+			}
+		}
+		Cells[iter].SwitchCommand(F);
 	}
 }
 
 void Simulation::GeneAction() {
-	uint16_t CMD;
 	uint8_t CM;
 	uint8_t AR;
+	RandomInt raan;
 
-	for (int iter = 0; iter != Cells.size(); iter++) {
-		CMD = Cells[iter].GetCurrentCommand();
+	size_t size = Cells.size();
+
+	for (int iter = 0; iter != size; iter++) {
+		Cell& cell = Cells[iter];
 		
-		CM = CMD % 0x100;
-		AR = CMD / 0x100;
+		if (&cell == nullptr) {
+			RandomShort random;
 
-		//switch (CM) {
-		//case Nothing:
-		//	{
-		//	iter->SetWait();
-		//	}
-		//	break;
-		//default:
-		//	{
-		//	COORD S = iter->GetCoord();
-		//	S.X += (rand() % 3) - 1;
-		//	S.Y+= (rand() % 3) - 1;
+			short x = rand()% MAP_X;
+			short y = rand() % MAP_Y;
 
-		//	iter->SetCoord(S.X, S.Y);
-		//	}
-		//	break;
-		//}
-
-		COORD S = Cells[iter].GetCoord();
-		S.X += (rand() % 3) - 1;
-		S.Y+= (rand() % 3) - 1;
-		if (IsInMap(S.X, S.Y) && !pMap->IsSea(S.X,S.Y,LS)) {
-			Cells[iter].SetCoord(S.X, S.Y);
-			pMap->SetMineralMap(S.X, S.Y, -0.01);
+			while (!pMap->GetVisibleMap(x, y) || pMap->IsSea(x, y, LS)) {
+				x = random.Next(MAP_X);
+				y = random.Next(MAP_Y);
+			}
+			COORD S = { x,y };
+			cell.Init(S);
 		}
 
-		
+		CM = cell.GetCommand();
+		AR = cell.GetArgument();
 
-		Cells[iter].ChangeEnergy(-1);
+		short x = cell.GetCoord().X;
+		short y = cell.GetCoord().Y;
+
+		switch (CM) {
+			case Move:
+				{					
+					switch (AR) {
+						case 0: 
+							{
+								y++;
+								if (CellMoveChecker(x, y))
+									cell.SetCoord(x, y);
+								break;
+							}
+						case 1: 
+							{
+								x++;
+								y++;
+								if (CellMoveChecker(x, y))
+									cell.SetCoord(x, y);
+								break;
+							}
+						case 2: 
+							{
+								x++;
+								if (CellMoveChecker(x, y))
+									cell.SetCoord(x, y);
+								break;
+							}
+						case 3:
+							{
+								x++;
+								y--;
+								if (CellMoveChecker(x, y))
+									cell.SetCoord(x, y);
+								break;
+							}
+						case 4: 
+							{
+								y--;
+								if (CellMoveChecker(x, y))
+									cell.SetCoord(x, y);
+								break;
+							}
+						case 5:
+							{
+								x--;
+								y--;
+								if (CellMoveChecker(x, y))
+									cell.SetCoord(x, y);
+								break;
+							}
+						case 6:
+							{
+								x--;
+								if (CellMoveChecker(x, y))
+									cell.SetCoord(x, y);
+								break;
+							}
+						case 7:
+							{
+								x--;
+								y++;
+								if (CellMoveChecker(x, y))
+									cell.SetCoord(x, y);
+								break;
+							}
+					}
+					cell.ChangeEnergy(-1);
+					break;
+				}
+			case Divide:
+				{
+					short xx = x;
+					short yy = y;
+					switch (AR) {
+						case 0:
+							{
+								y++;
+								if (CellMoveChecker(x, y)) {
+									cell.SetCoord(x, y);
+									Cell nextCell;
+									Cells.push_back(nextCell);
+									nextCell.Init(cell, 0);
+								}
+								cell.SetCoord(xx, yy);
+								break;
+							}
+						case 1:
+							{
+								x++;
+								y++;
+								if (CellMoveChecker(x, y)) {
+									cell.SetCoord(x, y);
+									Cell nextCell;
+									Cells.push_back(nextCell);
+									Cells[Cells.size() - 1].Init(cell, 0);
+								}
+								cell.SetCoord(xx, yy);
+								break;
+							}
+						case 2:
+							{
+								x++;
+								if (CellMoveChecker(x, y)) {
+									cell.SetCoord(x, y);
+									Cell nextCell;
+									Cells.push_back(nextCell);
+									nextCell.Init(cell, 0);
+								}
+								cell.SetCoord(xx, yy);
+								break;
+							}
+						case 3:
+							{
+								x++;
+								y--;
+								if (CellMoveChecker(x, y)) {
+									cell.SetCoord(x, y);
+									Cell nextCell;
+									Cells.push_back(nextCell);
+									nextCell.Init(cell, 0);
+								}
+								cell.SetCoord(xx, yy);
+								break;
+							}
+						case 4:
+							{
+								y--;
+								if (CellMoveChecker(x, y)) {
+									cell.SetCoord(x, y);
+									Cell nextCell;
+									Cells.push_back(nextCell);
+									nextCell.Init(cell, 0);
+								}
+								cell.SetCoord(xx, yy);
+								break;
+							}
+						case 5:
+							{
+								x--;
+								y--;
+								if (CellMoveChecker(x, y)) {
+									cell.SetCoord(x, y);
+									Cell nextCell;
+									Cells.push_back(nextCell);
+									nextCell.Init(cell, 0);
+								}
+								cell.SetCoord(xx, yy);
+								break;
+							}
+						case 6:
+							{
+								x--;
+								if (CellMoveChecker(x, y)) {
+									cell.SetCoord(x, y);
+									Cell nextCell;
+									Cells.push_back(nextCell);
+									nextCell.Init(cell, 0);
+								}
+								cell.SetCoord(xx, yy);
+								break;
+							}
+						case 7:
+							{
+								x--;
+								y++;
+								if (CellMoveChecker(x, y)) {
+									cell.SetCoord(x, y);
+									Cell nextCell;
+									Cells.push_back(nextCell);
+									nextCell.Init(cell, 0);
+								}
+								cell.SetCoord(xx, yy);
+								break;
+							}
+					}
+					break;
+				}
+			default:
+				break;
+		}
+
+		assert(x - cell.GetCoord().X + 1 < 3);
+		assert(y - cell.GetCoord().Y + 1 < 3);
+		assert(AR < 8);
+		assert(CM < 8);
+		cell.ChangeEnergy(-1);
 	}
 }
 
@@ -99,7 +282,8 @@ void Simulation::GeneRetarget() {
 }
 
 void Simulation::Paint() {
-	LS = sinf(pPainter->GetT()*0.01)*0.1+ BiasLS;
+	LS = sinf(pPainter->GetT()* SIMULATION_SEA_FREQUENCY)* SIMULATION_SEA_AMPLITUDE + BiasLS;
+	assert(0 <= LS && LS < 1);
 	for (int i = 0;i < MAP_X;i++)
 		for (int j = 0;j < MAP_Y;j++)
 			pMap->SetVisibleMap(i, j, false);

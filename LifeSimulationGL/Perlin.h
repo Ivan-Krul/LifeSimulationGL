@@ -13,7 +13,7 @@ class PerlinNoise {
 	std::vector<int> p;
 public:
 	// Initialize with the reference values for the permutation vector
-	PerlinNoise() {
+	void Init() {
 
 		// Initialize the permutation vector with the reference values
 		p = {

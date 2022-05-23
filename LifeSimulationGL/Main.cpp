@@ -87,7 +87,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	ms = DisplayResourceNAMessageBox(NULL, L"Launcher", L"Application \"LifeSimulationGL\" is launched", MB_ICONINFORMATION | MB_OKCANCEL);
 	if(ms == IDCANCEL) return 0;
 
-	global.Init();
+	global.Init(1);
 	std::chrono::system_clock::time_point beg = std::chrono::system_clock::now(), end;
 	Simulation sim;
 	sim.Init(SIMULATION_STARTED_CELLS);

@@ -8,8 +8,8 @@
 #define MAP_X 200
 #define MAP_Y 200
 #define MAP_SCALE 1
-#define MAP_DETAIL_CHANGES 2
-#define MAP_NUM_OCTAVES 8
+#define MAP_DETAIL_CHANGES 4
+#define MAP_NUM_OCTAVES 4
 
 #define CELL_COUNT_GENES 4
 #define CELL_CHANCE_MUTATION 0.2f

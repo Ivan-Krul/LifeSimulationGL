@@ -1,5 +1,5 @@
 #pragma once
-#include "Cell.h"
+#include "celular.h"
 #include "Painter.h"
 #include "Random.h"
 #include <cassert>
@@ -9,7 +9,7 @@
 using std::vector;
 
 class Simulation {
-	vector<Cell> Cells;
+	vector<celular> Cells;
 	Map* pMap;
 	Painter* pPainter;
 

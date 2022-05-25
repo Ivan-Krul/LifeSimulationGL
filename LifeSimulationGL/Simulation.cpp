@@ -7,8 +7,6 @@ void Simulation::Init(int cnt) {
 	pMap = new Map();
 	pMap->GenerateMap();
 
-	Cell cll;
-
 	for (int i = 0;i < cnt;i++) {
 		short x = random.Next(MAP_X);
 		short y = random.Next(MAP_Y);
@@ -18,25 +16,24 @@ void Simulation::Init(int cnt) {
 			y = random.Next(MAP_Y);
 		}
 
-		COORD S = { x,y };
-		Cells.push_back(cll);
-		Cells[Cells.size() - 1].Init(S);
+		short m[2] = { x,y };
+		Cells.push_back(celular(m));
 	}
 }
 
 void Simulation::GeneSwitch() {
 	for (int iter = 0; iter != Cells.size(); iter++) {
 		int F = 0;
-		Cell& cell = Cells[iter];
+		celular& celula = Cells[iter];
 		for (int ii = -1;ii < 2;ii++) {
 			for (int jj = -1;jj < 2;jj++) {
 
-				if (pMap->GetVisibleMap(ii + cell.GetCoord().X, jj + cell.GetCoord().Y))
+				if (pMap->GetVisibleMap(ii + celula._pos[0], jj + celula._pos[1]))
 					F++;
 
 			}
 		}
-		Cells[iter].SwitchCommand(F);
+		Cells[iter].switch_command(F);
 	}
 }
 
@@ -48,13 +45,13 @@ void Simulation::GeneAction() {
 	size_t size = Cells.size();
 
 	for (int iter = 0; iter != size; iter++) {
-		Cell& cell = Cells[iter];
+		celular& celula = Cells[iter];
 
-		CM = cell.GetGene();
-		AR = cell.GetArgument();
+		CM = celula.get_command();
+		AR = celula.get_argument();
 
-		short x = cell.GetCoord().X;
-		short y = cell.GetCoord().Y;
+		short x = celula._pos[0];
+		short y = celula._pos[1];
 
 		switch (CM) {
 			case Move: {
@@ -62,49 +59,49 @@ void Simulation::GeneAction() {
 					case 0:
 						y++;
 						if (CellMoveChecker(x, y))
-							cell.SetCoord(x, y);
+							celula.set_cordinates(x, y);
 						break;
 					case 1:
 						x++;
 						y++;
 						if (CellMoveChecker(x, y))
-							cell.SetCoord(x, y);
+							celula.set_cordinates(x, y);
 						break;
 					case 2:
 						x++;
 						if (CellMoveChecker(x, y))
-							cell.SetCoord(x, y);
+							celula.set_cordinates(x, y);
 						break;
 					case 3:
 						x++;
 						y--;
 						if (CellMoveChecker(x, y))
-							cell.SetCoord(x, y);
+							celula.set_cordinates(x, y);
 						break;
 					case 4:
 						y--;
 						if (CellMoveChecker(x, y))
-							cell.SetCoord(x, y);
+							celula.set_cordinates(x, y);
 						break;
 					case 5:
 						x--;
 						y--;
 						if (CellMoveChecker(x, y))
-							cell.SetCoord(x, y);
+							celula.set_cordinates(x, y);
 						break;
 					case 6:
 						x--;
 						if (CellMoveChecker(x, y))
-							cell.SetCoord(x, y);
+							celula.set_cordinates(x, y);
 						break;
 					case 7:
 						x--;
 						y++;
 						if (CellMoveChecker(x, y))
-							cell.SetCoord(x, y);
+							celula.set_cordinates(x, y);
 						break;
 				}
-				cell.ChangeEnergy(-1);
+				celula.change_energy(-1);
 				break;
 			}
 			/*case Divide:
@@ -116,12 +113,12 @@ void Simulation::GeneAction() {
 							{
 								y++;
 								if (CellMoveChecker(x, y)) {
-									cell.SetCoord(x, y);
-									Cell nextCell;
+									celula.SetCoord(x, y);
+									celular nextCell;
 									Cells.push_back(nextCell);
-									nextCell.Init(cell, 0);
+									nextCell.Init(celula, 0);
 								}
-								cell.SetCoord(xx, yy);
+								celula.SetCoord(xx, yy);
 								break;
 							}
 						case 1:
@@ -129,24 +126,24 @@ void Simulation::GeneAction() {
 								x++;
 								y++;
 								if (CellMoveChecker(x, y)) {
-									cell.SetCoord(x, y);
-									Cell nextCell;
+									celula.SetCoord(x, y);
+									celular nextCell;
 									Cells.push_back(nextCell);
-									Cells[Cells.size() - 1].Init(cell, 0);
+									Cells[Cells.size() - 1].Init(celula, 0);
 								}
-								cell.SetCoord(xx, yy);
+								celula.SetCoord(xx, yy);
 								break;
 							}
 						case 2:
 							{
 								x++;
 								if (CellMoveChecker(x, y)) {
-									cell.SetCoord(x, y);
-									Cell nextCell;
+									celula.SetCoord(x, y);
+									celular nextCell;
 									Cells.push_back(nextCell);
-									nextCell.Init(cell, 0);
+									nextCell.Init(celula, 0);
 								}
-								cell.SetCoord(xx, yy);
+								celula.SetCoord(xx, yy);
 								break;
 							}
 						case 3:
@@ -154,24 +151,24 @@ void Simulation::GeneAction() {
 								x++;
 								y--;
 								if (CellMoveChecker(x, y)) {
-									cell.SetCoord(x, y);
-									Cell nextCell;
+									celula.SetCoord(x, y);
+									celular nextCell;
 									Cells.push_back(nextCell);
-									nextCell.Init(cell, 0);
+									nextCell.Init(celula, 0);
 								}
-								cell.SetCoord(xx, yy);
+								celula.SetCoord(xx, yy);
 								break;
 							}
 						case 4:
 							{
 								y--;
 								if (CellMoveChecker(x, y)) {
-									cell.SetCoord(x, y);
-									Cell nextCell;
+									celula.SetCoord(x, y);
+									celular nextCell;
 									Cells.push_back(nextCell);
-									nextCell.Init(cell, 0);
+									nextCell.Init(celula, 0);
 								}
-								cell.SetCoord(xx, yy);
+								celula.SetCoord(xx, yy);
 								break;
 							}
 						case 5:
@@ -179,24 +176,24 @@ void Simulation::GeneAction() {
 								x--;
 								y--;
 								if (CellMoveChecker(x, y)) {
-									cell.SetCoord(x, y);
-									Cell nextCell;
+									celula.SetCoord(x, y);
+									celular nextCell;
 									Cells.push_back(nextCell);
-									nextCell.Init(cell, 0);
+									nextCell.Init(celula, 0);
 								}
-								cell.SetCoord(xx, yy);
+								celula.SetCoord(xx, yy);
 								break;
 							}
 						case 6:
 							{
 								x--;
 								if (CellMoveChecker(x, y)) {
-									cell.SetCoord(x, y);
-									Cell nextCell;
+									celula.SetCoord(x, y);
+									celular nextCell;
 									Cells.push_back(nextCell);
-									nextCell.Init(cell, 0);
+									nextCell.Init(celula, 0);
 								}
-								cell.SetCoord(xx, yy);
+								celula.SetCoord(xx, yy);
 								break;
 							}
 						case 7:
@@ -204,12 +201,12 @@ void Simulation::GeneAction() {
 								x--;
 								y++;
 								if (CellMoveChecker(x, y)) {
-									cell.SetCoord(x, y);
-									Cell nextCell;
+									celula.SetCoord(x, y);
+									celular nextCell;
 									Cells.push_back(nextCell);
-									nextCell.Init(cell, 0);
+									nextCell.Init(celula, 0);
 								}
-								cell.SetCoord(xx, yy);
+								celula.SetCoord(xx, yy);
 								break;
 							}
 					}
@@ -220,46 +217,46 @@ void Simulation::GeneAction() {
 						case 0:
 							y++;
 							if (IsInMap(x, y))
-								cell.ChangeEnergy(Photosyntes(x, y, pPainter->GetT()));
+								celula.change_energy(Photosyntes(x, y, pPainter->GetT()));
 							break;
 						case 1:
 							x++;
 							y++;
 							if (IsInMap(x, y))
-								cell.ChangeEnergy(Photosyntes(x, y, pPainter->GetT()));
+								celula.change_energy(Photosyntes(x, y, pPainter->GetT()));
 							break;
 						case 2:
 							x++;
 							if (IsInMap(x, y))
-								cell.ChangeEnergy(Photosyntes(x, y, pPainter->GetT()));
+								celula.change_energy(Photosyntes(x, y, pPainter->GetT()));
 							break;
 						case 3:
 							x++;
 							y--;
 							if (IsInMap(x, y))
-								cell.ChangeEnergy(Photosyntes(x, y, pPainter->GetT()));
+								celula.change_energy(Photosyntes(x, y, pPainter->GetT()));
 							break;
 						case 4:
 							y--;
 							if (IsInMap(x, y))
-								cell.ChangeEnergy(Photosyntes(x, y, pPainter->GetT()));
+								celula.change_energy(Photosyntes(x, y, pPainter->GetT()));
 							break;
 						case 5:
 							x--;
 							y--;
 							if (IsInMap(x, y))
-								cell.ChangeEnergy(Photosyntes(x, y, pPainter->GetT()));
+								celula.change_energy(Photosyntes(x, y, pPainter->GetT()));
 							break;
 						case 6:
 							x--;
 							if (IsInMap(x, y))
-								cell.ChangeEnergy(Photosyntes(x, y, pPainter->GetT()));
+								celula.change_energy(Photosyntes(x, y, pPainter->GetT()));
 							break;
 						case 7:
 							x--;
 							y++;
 							if (IsInMap(x, y))
-								cell.ChangeEnergy(Photosyntes(x, y, pPainter->GetT()));
+								celula.change_energy(Photosyntes(x, y, pPainter->GetT()));
 							break;
 					}
 					break;
@@ -270,9 +267,9 @@ void Simulation::GeneAction() {
 							y++;
 							if (IsInMap(x, y))
 								for (int i = 0;i < size;i++) {
-									if (Cells[i].GetCoord().X == x && Cells[i].GetCoord().Y == y) {
-										Cells[i].ChangeEnergy(-SIMULATION_COUNT_MEAT);
-										cell.ChangeEnergy(SIMULATION_COUNT_MEAT);
+									if (Cells[i]._pos[0] == x && Cells[i]._pos[1] == y) {
+										Cells[i].change_energy(-SIMULATION_COUNT_MEAT);
+										celula.change_energy(SIMULATION_COUNT_MEAT);
 										break;
 									}
 								}
@@ -282,9 +279,9 @@ void Simulation::GeneAction() {
 							y++;
 							if (IsInMap(x, y))
 								for (int i = 0;i < size;i++) {
-									if (Cells[i].GetCoord().X == x && Cells[i].GetCoord().Y == y) {
-										Cells[i].ChangeEnergy(-SIMULATION_COUNT_MEAT);
-										cell.ChangeEnergy(SIMULATION_COUNT_MEAT);
+									if (Cells[i]._pos[0] == x && Cells[i]._pos[1] == y) {
+										Cells[i].change_energy(-SIMULATION_COUNT_MEAT);
+										celula.change_energy(SIMULATION_COUNT_MEAT);
 										break;
 									}
 								}
@@ -293,9 +290,9 @@ void Simulation::GeneAction() {
 							x++;
 							if (IsInMap(x, y))
 								for (int i = 0;i < size;i++) {
-									if (Cells[i].GetCoord().X == x && Cells[i].GetCoord().Y == y) {
-										Cells[i].ChangeEnergy(-SIMULATION_COUNT_MEAT);
-										cell.ChangeEnergy(SIMULATION_COUNT_MEAT);
+									if (Cells[i]._pos[0] == x && Cells[i]._pos[1] == y) {
+										Cells[i].change_energy(-SIMULATION_COUNT_MEAT);
+										celula.change_energy(SIMULATION_COUNT_MEAT);
 										break;
 									}
 								}
@@ -305,9 +302,9 @@ void Simulation::GeneAction() {
 							y--;
 							if (IsInMap(x, y))
 								for (int i = 0;i < size;i++) {
-									if (Cells[i].GetCoord().X == x && Cells[i].GetCoord().Y == y) {
-										Cells[i].ChangeEnergy(-SIMULATION_COUNT_MEAT);
-										cell.ChangeEnergy(SIMULATION_COUNT_MEAT);
+									if (Cells[i]._pos[0] == x && Cells[i]._pos[1] == y) {
+										Cells[i].change_energy(-SIMULATION_COUNT_MEAT);
+										celula.change_energy(SIMULATION_COUNT_MEAT);
 										break;
 									}
 								}
@@ -316,9 +313,9 @@ void Simulation::GeneAction() {
 							y--;
 							if (IsInMap(x, y))
 								for (int i = 0;i < size;i++) {
-									if (Cells[i].GetCoord().X == x && Cells[i].GetCoord().Y == y) {
-										Cells[i].ChangeEnergy(-SIMULATION_COUNT_MEAT);
-										cell.ChangeEnergy(SIMULATION_COUNT_MEAT);
+									if (Cells[i]._pos[0] == x && Cells[i]._pos[1] == y) {
+										Cells[i].change_energy(-SIMULATION_COUNT_MEAT);
+										celula.change_energy(SIMULATION_COUNT_MEAT);
 										break;
 									}
 								}
@@ -328,9 +325,9 @@ void Simulation::GeneAction() {
 							y--;
 							if (IsInMap(x, y))
 								for (int i = 0;i < size;i++) {
-									if (Cells[i].GetCoord().X == x && Cells[i].GetCoord().Y == y) {
-										Cells[i].ChangeEnergy(-SIMULATION_COUNT_MEAT);
-										cell.ChangeEnergy(SIMULATION_COUNT_MEAT);
+									if (Cells[i]._pos[0] == x && Cells[i]._pos[1] == y) {
+										Cells[i].change_energy(-SIMULATION_COUNT_MEAT);
+										celula.change_energy(SIMULATION_COUNT_MEAT);
 										break;
 									}
 								}
@@ -339,9 +336,9 @@ void Simulation::GeneAction() {
 							x--;
 							if (IsInMap(x, y))
 								for (int i = 0;i < size;i++) {
-									if (Cells[i].GetCoord().X == x && Cells[i].GetCoord().Y == y) {
-										Cells[i].ChangeEnergy(-SIMULATION_COUNT_MEAT);
-										cell.ChangeEnergy(SIMULATION_COUNT_MEAT);
+									if (Cells[i]._pos[0] == x && Cells[i]._pos[1] == y) {
+										Cells[i].change_energy(-SIMULATION_COUNT_MEAT);
+										celula.change_energy(SIMULATION_COUNT_MEAT);
 										break;
 									}
 								}
@@ -351,9 +348,9 @@ void Simulation::GeneAction() {
 							y++;
 							if (IsInMap(x, y))
 								for (int i = 0;i < size;i++) {
-									if (Cells[i].GetCoord().X == x && Cells[i].GetCoord().Y == y) {
-										Cells[i].ChangeEnergy(-SIMULATION_COUNT_MEAT);
-										cell.ChangeEnergy(SIMULATION_COUNT_MEAT);
+									if (Cells[i]._pos[0] == x && Cells[i]._pos[1] == y) {
+										Cells[i].change_energy(-SIMULATION_COUNT_MEAT);
+										celula.change_energy(SIMULATION_COUNT_MEAT);
 										break;
 									}
 								}
@@ -367,7 +364,7 @@ void Simulation::GeneAction() {
 							{
 								y++;
 								if (IsInMap(x, y)) {
-									cell.ChangeEnergy(SIMULATION_COUNT_MINERAL);
+									celula.change_energy(SIMULATION_COUNT_MINERAL);
 									pMap->SetMineralMap(x, y, -0.05);
 								}
 								break;
@@ -377,7 +374,7 @@ void Simulation::GeneAction() {
 								x++;
 								y++;
 								if (IsInMap(x, y)) {
-									cell.ChangeEnergy(SIMULATION_COUNT_MINERAL);
+									celula.change_energy(SIMULATION_COUNT_MINERAL);
 									pMap->SetMineralMap(x, y, -0.05);
 								}
 								break;
@@ -386,7 +383,7 @@ void Simulation::GeneAction() {
 							{
 								x++;
 								if (IsInMap(x, y)) {
-									cell.ChangeEnergy(SIMULATION_COUNT_MINERAL);
+									celula.change_energy(SIMULATION_COUNT_MINERAL);
 									pMap->SetMineralMap(x, y, -0.05);
 								}
 								break;
@@ -396,7 +393,7 @@ void Simulation::GeneAction() {
 								x++;
 								y--;
 								if (IsInMap(x, y)) {
-									cell.ChangeEnergy(SIMULATION_COUNT_MINERAL);
+									celula.change_energy(SIMULATION_COUNT_MINERAL);
 									pMap->SetMineralMap(x, y, -0.05);
 								}
 								break;
@@ -405,7 +402,7 @@ void Simulation::GeneAction() {
 							{
 								y--;
 								if (IsInMap(x, y)) {
-									cell.ChangeEnergy(SIMULATION_COUNT_MINERAL);
+									celula.change_energy(SIMULATION_COUNT_MINERAL);
 									pMap->SetMineralMap(x, y, -0.05);
 								}
 								break;
@@ -415,7 +412,7 @@ void Simulation::GeneAction() {
 								x--;
 								y--;
 								if (IsInMap(x, y)) {
-									cell.ChangeEnergy(SIMULATION_COUNT_MINERAL);
+									celula.change_energy(SIMULATION_COUNT_MINERAL);
 									pMap->SetMineralMap(x, y, -0.05);
 								}
 								break;
@@ -424,7 +421,7 @@ void Simulation::GeneAction() {
 							{
 								x--;
 								if (IsInMap(x, y)) {
-									cell.ChangeEnergy(SIMULATION_COUNT_MINERAL);
+									celula.change_energy(SIMULATION_COUNT_MINERAL);
 									pMap->SetMineralMap(x, y, -0.05);
 								}
 								break;
@@ -434,7 +431,7 @@ void Simulation::GeneAction() {
 								x--;
 								y++;
 								if (IsInMap(x, y)) {
-									cell.ChangeEnergy(SIMULATION_COUNT_MINERAL);
+									celula.change_energy(SIMULATION_COUNT_MINERAL);
 									pMap->SetMineralMap(x, y, -0.05);
 								}
 								break;
@@ -446,29 +443,30 @@ void Simulation::GeneAction() {
 				break;
 		}
 
-		assert(x - cell.GetCoord().X + 1 < 3);
-		assert(y - cell.GetCoord().Y + 1 < 3);
+		assert(x - celula._pos[0] + 1 < 3);
+		assert(y - celula._pos[1] + 1 < 3);
 		assert(AR < 8);
 		assert(0 <= AR);
 		assert(CM < 8);
 		assert(0 <= CM);
-		cell.ChangeEnergy(-1);
+		celula.change_energy(-1);
 	}
 }
 
 void Simulation::GeneRetarget() {
 	for (int iter = Cells.size() - 1; iter > -1; iter--) {
-		Cell& cell = Cells[iter];
-		COORD& cord = Cells[iter].GetCoord();
+		celular& celula = Cells[iter];
+		short& cordX = Cells[iter]._pos[0];
+		short& cordY = Cells[iter]._pos[1];
 
-		if (Cells[iter].GetEnergy() <= 0 || pMap->IsSea(cord.X, cord.Y, LS)) {
+		if (Cells[iter].get_energy() <= 0 || pMap->IsSea(cordX, cordY, LS)) {
 
 
 			for (int ii = -1;ii < 2;ii++) {
 				for (int jj = -1;jj < 2;jj++) {
 
-					if (IsInMap((cord.X + jj), (cord.Y + ii)) && (ii != 0 || jj != 0)) {
-						pMap->SetMineralMap(cord.X + jj, cord.Y + ii, 0.1);
+					if (IsInMap((cordX + jj), (cordY + ii)) && (ii != 0 || jj != 0)) {
+						pMap->SetMineralMap(cordX + jj, cordY + ii, 0.1);
 					}
 
 				}
@@ -487,7 +485,7 @@ void Simulation::Paint() {
 			pMap->SetVisibleMap(i, j, false);
 
 	for (int iter = Cells.size() - 1; iter > -1; iter--) {
-		pMap->SetVisibleMap(Cells[iter].GetCoord().X, Cells[iter].GetCoord().Y, true);
+		pMap->SetVisibleMap(Cells[iter]._pos[0], Cells[iter]._pos[1], true);
 	}
 	//Do();
 

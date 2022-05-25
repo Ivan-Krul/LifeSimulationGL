@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -139,19 +139,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="celular.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cell.h" />
+    <ClInclude Include="celular.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Painter.h" />
     <ClInclude Include="Perlin.h" />
     <ClInclude Include="Random.h" />
-    <ClInclude Include="Variables.h" />
     <ClInclude Include="Simulation.h" />
+    <ClInclude Include="Variables.h" />
     <ClInclude Include="workGL.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,4 @@
-﻿
+
 #include <windows.h>
 #include <gl/gl.h>
 #include <string>
@@ -85,7 +85,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	EnableOpenGL(hwnd, &hDC, &hRC);
 
 	ms = DisplayResourceNAMessageBox(NULL, L"Launcher", L"Application \"LifeSimulationGL\" is launched", MB_ICONINFORMATION | MB_OKCANCEL);
-	if(ms == IDCANCEL) return 0;
+	if (ms == IDCANCEL) return 0;
 
 	global.Init(1);
 	std::chrono::system_clock::time_point beg = std::chrono::system_clock::now(), end;
@@ -104,7 +104,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			/* handle or dispatch messages */
 			if (msg.message == WM_QUIT) {
 				ms = DisplayResourceNAMessageBox(NULL, L"Launcher", L"Quit from application?", MB_ICONQUESTION | MB_YESNO);
-				if(ms== IDYES) bQuit = TRUE;
+				if (ms == IDYES) bQuit = TRUE;
 			}
 			else {
 				TranslateMessage(&msg);
@@ -144,12 +144,12 @@ int WINAPI WinMain(HINSTANCE hInstance,
 			SwapBuffers(hDC);
 
 			end = std::chrono::system_clock::now();
-			std::wstring text = L"LifeSimulationGL " + std::to_wstring(std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count())+L" ms";
+			std::wstring text = L"LifeSimulationGL " + std::to_wstring(std::chrono::duration_cast<std::chrono::milliseconds>(end - beg).count()) + L" ms";
 			beg = std::chrono::system_clock::now();
 			SetWindowText(hwnd, text.c_str());
 
 			theta += 1.0f;
-			Sleep((1000.0/WINDOW_FREQUENCY));
+			Sleep((1000.0 / WINDOW_FREQUENCY));
 		}
 	}
 

@@ -7,7 +7,7 @@ static class GlobalRandom {
 	unsigned long long a;
 	unsigned long long c;
 	unsigned long long seed;
-public:
+	public:
 	GlobalRandom() {
 		Init();
 	}
@@ -40,7 +40,7 @@ class RandomLongLong {
 	unsigned long long seed;
 	size_t iter;
 
-public:
+	public:
 	RandomLongLong() {
 		seed = global.GiveSeed();
 
@@ -94,7 +94,7 @@ public:
 		return X % board;
 	}
 
-	long long Next(long long left, long long rigth) {
+	unsigned long long Next(unsigned long long left, unsigned long long rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth - left)) + left;
@@ -108,7 +108,7 @@ class RandomInt {
 	unsigned int seed;
 	size_t iter;
 
-public:
+	public:
 	RandomInt() {
 		seed = global.GiveSeed();
 
@@ -162,10 +162,10 @@ public:
 		return X % board;
 	}
 
-	int Next(int left, int rigth) {
+	unsigned int Next(unsigned int left, unsigned int rigth) {
 		X = X * a + c;
 		iter++;
-		return (X % (rigth-left))+left;
+		return (X % (rigth - left)) + left;
 	}
 };
 
@@ -178,7 +178,7 @@ class RandomShort {
 	unsigned short seed;
 	size_t iter;
 
-public:
+	public:
 	RandomShort() {
 		seed = global.GiveSeed();
 
@@ -232,7 +232,7 @@ public:
 		return X % board;
 	}
 
-	short Next(short left, short rigth) {
+	unsigned short Next(unsigned short left, unsigned short rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth - left)) + left;
@@ -246,7 +246,7 @@ class RandomByte {
 	unsigned char seed;
 	size_t iter;
 
-public:
+	public:
 	RandomByte() {
 		seed = global.GiveSeed();
 
@@ -300,7 +300,7 @@ public:
 		return X % board;
 	}
 
-	char Next(char left, char rigth) {
+	unsigned char Next(unsigned char left, unsigned char rigth) {
 		X = X * a + c;
 		iter++;
 		return (X % (rigth - left)) + left;
@@ -314,7 +314,7 @@ class RandomFloat {
 	unsigned int seed;
 	size_t iter;
 
-public:
+	public:
 	RandomFloat() {
 		seed = global.GiveSeed();
 
@@ -357,7 +357,7 @@ public:
 	}
 
 	float Next() {
-		X = X * a + c ;
+		X = X * a + c;
 		iter++;
 		return float(X) / 0x7fff;
 	}
@@ -365,13 +365,13 @@ public:
 	float Next(float board) {
 		X = X * a + c;
 		iter++;
-		return std::fmod(float(X)/0x7fff,board);
+		return std::fmod(float(X) / 0x7fff, board);
 	}
 
 	float Next(float left, float rigth) {
 		X = X * a + c;
 		iter++;
-		return std::fmod(float(X) / 0x7fff, rigth-left) + left;
+		return std::fmod(float(X) / 0x7fff, rigth - left) + left;
 	}
 };
 
@@ -382,7 +382,7 @@ class RandomDouble {
 	unsigned int seed;
 	size_t iter;
 
-public:
+	public:
 	RandomDouble() {
 		seed = global.GiveSeed();
 
